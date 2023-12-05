@@ -28,8 +28,8 @@ export function Chat({
     const renderMessages = () => {
         return (
             messages.map((message, index) => (
-                <div key={`new-message-id-${index}`} className='message'>
-                    <div className={`${message.role}`}>{`${message.role}:`}</div>
+                <div key={`new-message-id-${index}`} className={styles['message']}>
+                    <div className={styles[`${message.role}`]}>{`${message.role}:`}</div>
                     <div>{message.content}</div>
                 </div>
             ))
@@ -39,7 +39,6 @@ export function Chat({
     return (
         <div className={styles['main-page']}>
             <h1 className={styles['h1']}>{title}</h1>
-
 
             <button className={styles['button']} onClick={onClearChat}>Clear</button>
 
