@@ -1,4 +1,4 @@
-export function Assistant() {
+export default function Page() {
     return (
         <div>Helloo!</div>
     )
