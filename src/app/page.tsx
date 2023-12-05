@@ -7,8 +7,8 @@ import OpenAI from "openai";
 // Load environment variables from .env.local
 require('dotenv').config();
 
-const apiKeyENV = process.env.OPENAI_API_KEY
-const openai = new OpenAI({ apiKey: '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', dangerouslyAllowBrowser: true });
+const apiKey = process.env.OPENAI_API_KEY
+const openai = new OpenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
 const DEFAULT_CHAT_MESSAGE = [
   { "role": "system", "content": "You are a helpful assistant." },
@@ -46,8 +46,6 @@ function Home() {
 
   const navigateToAssistant = async () => {
   }
-
-
 
   const renderMessages = () => {
     return (
