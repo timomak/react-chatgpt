@@ -12,7 +12,8 @@ interface ChatProps {
     onGenerateResponse: () => void;
     inputText: string;
     onTextChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-    onClearChat: () => void;
+    onClearChat?: () => void;
+    onRead?: () => void;
 }
 
 export function Chat({
@@ -22,6 +23,7 @@ export function Chat({
     inputText,
     onTextChange,
     onClearChat,
+    onRead
 }: ChatProps) {
 
 
@@ -39,9 +41,7 @@ export function Chat({
     return (
         <div className={styles['main-page']}>
             <h1 className={styles['h1']}>{title}</h1>
-
-            <button className={styles['button']} onClick={onClearChat}>Clear</button>
-
+            {onClearChat ? <button className={styles['button']} onClick={onClearChat}>Clear</button> : null}
             <div className={styles['response-area']}>
                 <strong>Response:</strong>
                 <div>{renderMessages()}</div>
@@ -54,7 +54,7 @@ export function Chat({
                 onChange={onTextChange}
             />
             <button className={styles['button']} onClick={onGenerateResponse}>Generate Response</button>
-
+            {onRead ? <button className={styles['button']} onClick={onRead}>Read</button> : null}
         </div>
 
     )

@@ -13,7 +13,7 @@ const apiKey = process.env.OPENAI_API_KEY
 const openai = new OpenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
 const assistantId = 'asst_d1Pin7e2l00X3KyHQxPUmSY3'
-const messageThread = 'thread_3pcIx0DB7MDv9Dy8TH1glrDj'
+const messageThread = 'thread_xy6I8n0Ot8G8P6Dod1DXa32R'
 
 export default function Page() {
     const [inputText, setInputText] = useState('');
@@ -23,9 +23,19 @@ export default function Page() {
         setInputText(e.target.value);
     };
 
+    const handleReadLastMessage = (currentMessages: Message[]) => {
+        const tempMessages = currentMessages.slice()
+        const lastElement = tempMessages.pop()
+        if (lastElement && lastElement.content) {
+            const msg = new SpeechSynthesisUtterance()
+            msg.text = lastElement ? lastElement.content : 'No messages'
+            speechSynthesis.getVoices()
+            speechSynthesis.speak(msg)
+        }
+    }
 
-    const retrieveThreadMessages = async (threadId: string) => {
-        const threadMessages = await openai.beta.threads.messages.list(threadId, { limit: 5 });
+    const retrieveThreadMessages = async (threadId: string, readLastMessage?: boolean) => {
+        const threadMessages = await openai.beta.threads.messages.list(threadId);
 
         if (threadMessages.data.length > 0) {
             const allMessages: Message[] = []
@@ -36,6 +46,12 @@ export default function Page() {
             })
             setMessages(allMessages.reverse())
             setInputText('')
+
+            if (readLastMessage) {
+                handleReadLastMessage(allMessages)
+            }
+        } else {
+            console.log("No messages yet!")
         }
     }
 
@@ -46,7 +62,7 @@ export default function Page() {
             if (threadMessages.status === 'completed') isComplete = true
         }
 
-        retrieveThreadMessages(threadId)
+        retrieveThreadMessages(threadId, true)
     }
 
 
@@ -57,7 +73,6 @@ export default function Page() {
 
         console.log("Thread runResponse:", runResponse)
         handleThreadRunStatus(threadId, runResponse)
-        // retrieveThreadMessages(messageThread)
     }
 
     const addMessageToThread = async () => {
@@ -82,33 +97,14 @@ export default function Page() {
         const currentAssistant = assistants.data.find((aiAssistant) => aiAssistant.name?.toLowerCase() === assistantName)
 
         const newThread = await openai.beta.threads.create({ metadata: { 'assistantId': currentAssistant?.id, currentUser: userName } });
+        console.log("newThread", newThread)
     }
 
 
     useEffect(() => {
-        // createThread('Timo')
-        // retrieveThread("thread_3pcIx0DB7MDv9Dy8TH1glrDj")
+        speechSynthesis.getVoices()
         retrieveThreadMessages(messageThread)
     }, [])
-
-
-    const generateResponse = async () => {
-        const addNewMessage = messages.slice(0);
-        addNewMessage.push({ role: 'user', content: inputText })
-
-        const completion = await openai.chat.completions.create({
-            messages: addNewMessage as any,
-            model: 'gpt-4',
-        });
-
-        const addResponseMessage = addNewMessage.slice(0);
-        addResponseMessage.push({ role: 'assistant', content: `${completion.choices[0].message.content}` })
-        setMessages(addResponseMessage)
-    };
-
-    const clearChat = async () => {
-        setMessages([])
-    }
 
     return (
         <>
@@ -121,7 +117,8 @@ export default function Page() {
                 onGenerateResponse={addMessageToThread}
                 inputText={inputText}
                 onTextChange={handleInputChange}
-                onClearChat={clearChat} />
+                onRead={() => handleReadLastMessage(messages)}
+            />
         </>
     );
 }
