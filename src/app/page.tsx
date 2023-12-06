@@ -4,7 +4,9 @@ import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import OpenAI from "openai";
 import Link from 'next/link';
-import { Chat, Message } from '@/shared/chat/chat';
+import { Chat } from '@/shared/chat/chat';
+import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
+import { PageWrapper } from '@/shared/page-wrapper/page-wrapper';
 
 // Load environment variables from .env.local
 require('dotenv').config();
@@ -12,13 +14,13 @@ require('dotenv').config();
 const apiKey = process.env.OPENAI_API_KEY
 const openai = new OpenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
-const DEFAULT_CHAT_MESSAGE: Message[] = [
+const DEFAULT_CHAT_MESSAGE: ChatCompletionMessageParam[] = [
   { "role": "system", "content": "You are a helpful assistant." },
 ]
 
 function Home() {
   const [inputText, setInputText] = useState('');
-  const [messages, setMessages] = useState<Message[]>(DEFAULT_CHAT_MESSAGE);
+  const [messages, setMessages] = useState<ChatCompletionMessageParam[]>(DEFAULT_CHAT_MESSAGE);
 
   const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
     setInputText(e.target.value);
@@ -43,18 +45,16 @@ function Home() {
   }
 
   return (
-    <>
-      <Link href="/assistant">
-        <div className='button'>Go To Assistant</div>
-      </Link>
-      <Chat
-        messages={messages}
-        title={"OpenAI CHAT GPT-5"}
-        onGenerateResponse={generateResponse}
-        inputText={inputText}
-        onTextChange={handleInputChange}
-        onClearChat={clearChat} />
-    </>
+    <PageWrapper>
+      <div className='vertical-list hard-center flex-align-center'>
+        <Link href="/assistant">
+          <div className='glow-button flex-align-center'>Assistants</div>
+        </Link>
+        <Link href="/chat">
+          <div className='glow-button flex-align-center'>Chat with Expert</div>
+        </Link>
+      </div>
+    </PageWrapper>
   );
 }
 

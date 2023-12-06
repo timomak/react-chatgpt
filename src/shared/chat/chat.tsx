@@ -1,13 +1,9 @@
 import { ChangeEvent, ReactElement } from "react";
 import styles from './chat.module.css'
-
-export interface Message {
-    role: 'user' | 'assistant' | 'system';
-    content: string;
-}
+import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 
 interface ChatProps {
-    messages: Message[]
+    messages: ChatCompletionMessageParam[]
     title: string;
     onGenerateResponse: () => void;
     inputText: string;
@@ -32,29 +28,29 @@ export function Chat({
             messages.map((message, index) => (
                 <div key={`new-message-id-${index}`} className={styles['message']}>
                     <div className={styles[`${message.role}`]}>{`${message.role}:`}</div>
-                    <div>{message.content}</div>
+                    <div>{message.content as string}</div>
                 </div>
             ))
         )
     }
 
     return (
-        <div className={styles['main-page']}>
-            <h1 className={styles['h1']}>{title}</h1>
-            {onClearChat ? <button className={styles['button']} onClick={onClearChat}>Clear</button> : null}
+        <div className={'main-page'}>
+            <h1 className={'h1'}>{title}</h1>
+            {onClearChat ? <button className={'button'} onClick={onClearChat}>Clear</button> : null}
             <div className={styles['response-area']}>
                 <strong>Response:</strong>
                 <div>{renderMessages()}</div>
             </div>
 
             <textarea
-                className={styles['textarea']}
+                className={'textarea'}
                 placeholder="Enter a prompt..."
                 value={inputText}
                 onChange={onTextChange}
             />
-            <button className={styles['button']} onClick={onGenerateResponse}>Generate Response</button>
-            {onRead ? <button className={styles['button']} onClick={onRead}>Read</button> : null}
+            <button className={'button'} onClick={onGenerateResponse}>Generate Response</button>
+            {onRead ? <button className={'button'} onClick={onRead}>Read</button> : null}
         </div>
 
     )

@@ -3,15 +3,127 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --main-bg-color: #28282B;
+  --general-spacing: 16px;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --main-bg-color: #28282B;	
+  }
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  background-color: var(--main-bg-color);
+}
+
+html,
+body,
+div#__next,
+div#__next > div {
+  height: 100%;
+  min-height: 100vh;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  > div:first-child  {
+    height: 100%;
+    min-height: 100vh;
+  }
+}
+
+.spacing {
+  &--left-first-child {
+    > div:first-child {
+      padding-left: var(--general-spacing);
+    }
+
+    > a:first-child {
+      padding-left: var(--general-spacing);
+    }
+  }
+
+  &--left {
+    padding-left: var(--general-spacing);
+
+    &-half {
+      padding-left: calc(var(--general-spacing) / 2);
+    }
+  }
+
+  &--bottom {
+    padding-bottom: var(--general-spacing);
+
+    &-half {
+      padding-bottom: calc(var(--general-spacing) / 2);
+    }
+  }
+
+  &--top {
+    padding-top: var(--general-spacing);
+
+    &-half {
+      padding-top: calc(var(--general-spacing) / 2);
+    }
+
+    &-double {
+      padding-top: calc(var(--general-spacing) * 2);
+    }
+
+    &-margin {
+      margin-top: var(--general-spacing);
+    }
+  }
+
+  &--right {
+    padding-right: var(--general-spacing);
+  }
+
+  &--vertical {
+    padding-top: var(--general-spacing);
+    padding-bottom: var(--general-spacing);
+  }
+
+  &--horizontal {
+    margin-left: var(--general-spacing);
+    margin-right: var(--general-spacing);
+  }
+
+  &--gap {
+    gap: var(--general-spacing);
+  }
+
+  &__window {
+    margin: var(--general-spacing);
+
+    &--top {
+      margin-top: var(--general-spacing);
+    }
+
+    &--left {
+      margin-left: var(--general-spacing);
+    }
+
+    &--right {
+      margin-right: var(--general-spacing);
+    }
+
+    &--bottom {
+      margin-bottom: var(--general-spacing);
+    }
+
+    &--vertical {
+      margin: var(--general-spacing) 0;
+    }
+
+    &--horizontal {
+      margin: 0 var(--general-spacing);
+    }
   }
 }
