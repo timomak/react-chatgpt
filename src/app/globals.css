@@ -3,13 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --main-bg-color: #28282B;
+  --main-bg-color: #111;
+  --primary-color: #020251;
   --general-spacing: 16px;
+  --window-spacing: 32px;
+
+
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --main-bg-color: #28282B;	
+    --main-bg-color: #111;	
   }
 }
 
@@ -19,23 +23,7 @@ html {
 
 body {
   background-color: var(--main-bg-color);
-}
-
-html,
-body,
-div#__next,
-div#__next > div {
-  height: 100%;
   min-height: 100vh;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  > div:first-child  {
-    height: 100%;
-    min-height: 100vh;
-  }
 }
 
 .spacing {

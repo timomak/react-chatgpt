@@ -110,9 +110,6 @@ export default function HomeScreen() {
 
     return (
         <PageWrapper>
-            <Link href="/">
-                <div className='button'>Go To DEFAULT CHAT</div>
-            </Link>
             <Chat
                 messages={messages}
                 title={"Enora Alpha v0.0.1"}

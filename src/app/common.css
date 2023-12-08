@@ -1,4 +1,9 @@
 .page-wrapper {
+  height: 100vh;
+}
+
+.page-wrapper--content {
+  padding: var(--window-spacing);
 }
 
 .vertical-list {
@@ -25,14 +30,6 @@
 .h1 {
     font-weight: 600;
     margin-top: 10%;
-}
-
-.textarea {
-  border: 1px grey solid;
-  height: 200px;
-  width: 300px;
-  margin-top: 20px;
-  padding: 10px;
 }
 
 .button {

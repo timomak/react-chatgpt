@@ -1,22 +1,84 @@
 .response-area {
-  margin: 80px;
-  border: 1px dashed black;
+  cursor: text;
+  margin-bottom: 5vh;
+  background-color: blue;
+}
+
+.response-area-glow::before {
+  opacity: 1 !important;
+}
+
+.response-area-glow::after {
+  opacity: .95 !important;
+}
+
+.response-text {
+  min-width: 100%;
+  max-height: 85vh;
+  min-height: 200px;
+  overflow: scroll;
   padding: 20px;
 }
 
+
+
+.inline-container {
+  display: flex;
+  width: 100%;
+}
+
+
+.input-bar {
+  display: flex;
+  flex: 1;
+  height: 60px
+}
+
+.input-bar:active:after {
+  opacity: 1 !important;
+}
+
+.textarea {
+  height: 60px;
+  flex: 1;
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  outline: none;
+  background-color: transparent;
+}
+
+.send-prompt-button {
+  border-radius: 30px;
+  height: 60px;
+  align-self: center;
+  font-weight: 500;
+  font-size: 22px;
+  width: 245px;
+  margin-left: var(--general-spacing);
+}
+
+.message {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.sender-text {
+  min-width: 100px;
+}
+
+
 .system {
-  color: #9B59B6;
+  color: #3498DB;
 }
 
 .user {
-  color: #3498DB;
+  color: #9B59B6;
+
 }
 
 .assistant {
   color: #2ECC71;
 }
 
-.message {
-  display: flex;
-  gap: 8px;
-}
