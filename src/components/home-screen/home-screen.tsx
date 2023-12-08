@@ -15,7 +15,7 @@ const apiKey = process.env.OPENAI_API_KEY
 const openai = new OpenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
 const assistantId = 'asst_d1Pin7e2l00X3KyHQxPUmSY3'
-const messageThreadId = 'thread_xy6I8n0Ot8G8P6Dod1DXa32R'
+const messageThreadId = "thread_2pKwpnNoVpT7SYrBtetkuuaI"
 
 export default function HomeScreen() {
     const [inputText, setInputText] = useState('');
@@ -104,6 +104,7 @@ export default function HomeScreen() {
 
 
     useEffect(() => {
+        // createThread("Timo")
         retrieveThreadMessages(messageThreadId)
     }, [])
 
@@ -114,7 +115,7 @@ export default function HomeScreen() {
             </Link>
             <Chat
                 messages={messages}
-                title={"Assistant"}
+                title={"Enora Alpha v0.0.1"}
                 onGenerateResponse={addMessageToThread}
                 inputText={inputText}
                 onTextChange={handleInputChange}

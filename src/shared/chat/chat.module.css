@@ -5,15 +5,15 @@
 }
 
 .system {
-  color: purple;
+  color: #9B59B6;
 }
 
 .user {
-  color: blue;
+  color: #3498DB;
 }
 
 .assistant {
-  color: red;
+  color: #2ECC71;
 }
 
 .message {
