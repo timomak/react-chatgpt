@@ -6,6 +6,7 @@ import { Chat } from '@/shared/chat/chat';
 import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
 import { PageWrapper } from '@/shared/page-wrapper/page-wrapper';
 import { SettingsMenu } from '@/shared/settings-menu/settings-menu';
+import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
 
 
 const apiKey = process.env.OPENAI_API_KEY
@@ -19,7 +20,7 @@ export default function HomeScreen() {
     const [inputText, setInputText] = useState('');
     const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
     const [bots, setBots] = useState<OpenAI.Beta.Assistants.Assistant[] | undefined>([]);
-    const [isSettingsOpen, setIsSettingsOpen] = useState(true);
+    const { isSettingsMenuOpen, setIsSettingsMenuOpen } = useChatSettings()
 
     const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
         setInputText(e.target.value);
@@ -111,14 +112,14 @@ export default function HomeScreen() {
     useEffect(() => {
         retrieveAllAssistants()
         // createThread("Timo")
-        // retrieveThreadMessages(messageThreadId)
+        retrieveThreadMessages(messageThreadId)
     }, [])
 
     return (
         <PageWrapper>
             <SettingsMenu
-                isOpen={isSettingsOpen}
-                setIsOpen={setIsSettingsOpen}
+                isOpen={isSettingsMenuOpen}
+                setIsOpen={setIsSettingsMenuOpen}
                 bots={bots}
                 isHovering={isNotHoveringChat}
                 setIsHovering={setIsNotHoveringChat}

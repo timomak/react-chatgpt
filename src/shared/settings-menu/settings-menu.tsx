@@ -72,7 +72,7 @@ export function SettingsMenu({
                 {/* <button className={`button ${styles['open-button']}`} onClick={onToggleOpenCloseMenu}>OPEN SETTINGS</button> */}
             </button>
 
-            <div className={styles['menu-container']}>
+            <div className={styles['bots-list']}>
                 {renderCreateBotButton()}
                 {renderBots()}
             </div>

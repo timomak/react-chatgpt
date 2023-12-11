@@ -27,7 +27,7 @@
     overflow-y: hidden;
 }
 
-.menu-container {
+.bots-list {
     height: 130px;
     border-radius: 8px;
     display: flex;

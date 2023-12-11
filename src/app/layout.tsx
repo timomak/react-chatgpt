@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import './common.css'
 import './fancy.css'
+import { ChatSettingsProvider } from '@/providers/chat-settings-provider/chat-settings-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <ChatSettingsProvider>
+        <body className={inter.className}>{children}</body>
+      </ChatSettingsProvider>
     </html>
   )
 }

@@ -83,7 +83,6 @@ export function Chat({
                     onMouseLeave={onHoverEnded}
                 >
                     <Image className={`${styles['send-prompt-button']}`} priority alt={`open-button`} src={Icons.SendIcon} />
-
                 </button>
             </div>
             {/* {onRead ? <button className={'button'} onClick={onRead}>Read</button> : null} */}
