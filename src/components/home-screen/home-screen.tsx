@@ -1,15 +1,12 @@
 'use client'
 
-import React, { Fragment, useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import OpenAI from "openai";
-import Link from 'next/link';
 import { Chat } from '@/shared/chat/chat';
 import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
 import { PageWrapper } from '@/shared/page-wrapper/page-wrapper';
+import { SettingsMenu } from '@/shared/settings-menu/settings-menu';
 
-// Load environment variables from .env.local
-require('dotenv').config();
 
 const apiKey = process.env.OPENAI_API_KEY
 const openai = new OpenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
@@ -18,8 +15,11 @@ const assistantId = 'asst_d1Pin7e2l00X3KyHQxPUmSY3'
 const messageThreadId = "thread_2pKwpnNoVpT7SYrBtetkuuaI"
 
 export default function HomeScreen() {
+    const [isNotHoveringChat, setIsNotHoveringChat] = useState(false);
     const [inputText, setInputText] = useState('');
     const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
+    const [bots, setBots] = useState<OpenAI.Beta.Assistants.Assistant[] | undefined>([]);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(true);
 
     const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
         setInputText(e.target.value);
@@ -102,14 +102,27 @@ export default function HomeScreen() {
         console.log("newThread", newThread)
     }
 
+    const retrieveAllAssistants = async () => {
+        const assistants = await openai.beta.assistants.list();
+        setBots(assistants.data)
+    }
+
 
     useEffect(() => {
+        retrieveAllAssistants()
         // createThread("Timo")
-        retrieveThreadMessages(messageThreadId)
+        // retrieveThreadMessages(messageThreadId)
     }, [])
 
     return (
         <PageWrapper>
+            <SettingsMenu
+                isOpen={isSettingsOpen}
+                setIsOpen={setIsSettingsOpen}
+                bots={bots}
+                isHovering={isNotHoveringChat}
+                setIsHovering={setIsNotHoveringChat}
+            />
             <Chat
                 messages={messages}
                 title={"Enora Alpha v0.0.1"}
@@ -117,6 +130,8 @@ export default function HomeScreen() {
                 inputText={inputText}
                 onTextChange={handleInputChange}
                 onRead={() => handleReadLastMessage(messages)}
+                isHovering={isNotHoveringChat}
+                setIsHovering={setIsNotHoveringChat}
             />
         </PageWrapper>
     );

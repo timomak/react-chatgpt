@@ -1,7 +1,6 @@
 .response-area {
   cursor: text;
   margin-bottom: 5vh;
-  background-color: blue;
 }
 
 .response-area-glow::before {
@@ -19,8 +18,6 @@
   overflow: scroll;
   padding: 20px;
 }
-
-
 
 .inline-container {
   display: flex;
@@ -48,14 +45,21 @@
   background-color: transparent;
 }
 
-.send-prompt-button {
+.send-prompt-button-container {
   border-radius: 30px;
   height: 60px;
   align-self: center;
   font-weight: 500;
   font-size: 22px;
-  width: 245px;
+  width: 150px;
   margin-left: var(--general-spacing);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.send-prompt-button {
+  user-select: none;
 }
 
 .message {

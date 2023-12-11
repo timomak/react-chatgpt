@@ -1,0 +1,64 @@
+.open-button-container {
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex: 1;
+    width: 100%;    
+}
+
+.open-button {
+    transition: transform .3s;
+}
+
+.open-button--open {
+    transform: rotate(180deg);
+}
+
+.settings-menu {
+    height: 180px;
+    margin-bottom: var(--general-spacing);
+    transition: height .3s, background-color .3s, overflow-y .3s;
+    overflow-y: visible;
+}
+
+.settings-menu-closed {
+    height: 40px;
+    overflow-y: hidden;
+}
+
+.menu-container {
+    height: 130px;
+    border-radius: 8px;
+    display: flex;
+    gap: calc(var(--general-spacing));
+}
+
+.bot {
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    padding: var(--general-spacing) 0;
+
+}
+
+.bot-image {
+    height: 45px;
+    width: 45px;
+    margin-bottom: var(--general-spacing);
+}
+
+.bot-description {
+    color: var(--white-color);
+    font-size: small;
+
+}
+
+.hidden-description {
+    color: var(--white-color);
+    font-size: small;
+
+}

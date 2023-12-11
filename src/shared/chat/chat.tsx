@@ -1,6 +1,8 @@
 import { ChangeEvent, ReactElement, useState } from "react";
 import styles from './chat.module.css'
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
+import Image from "next/image";
+import Icons from "../icons/icons";
 
 interface ChatProps {
     messages: ChatCompletionMessageParam[]
@@ -10,6 +12,8 @@ interface ChatProps {
     onTextChange: (e: ChangeEvent<HTMLInputElement>) => void;
     onClearChat?: () => void;
     onRead?: () => void;
+    isHovering: boolean;
+    setIsHovering: (anythingButChat: boolean) => void;
 }
 
 export function Chat({
@@ -19,10 +23,10 @@ export function Chat({
     inputText,
     onTextChange,
     onClearChat,
-    onRead
+    onRead,
+    isHovering,
+    setIsHovering
 }: ChatProps) {
-    const [isHovering, setIsHovering] = useState(false)
-
     const replaceRoleWithName = (role: ChatCompletionMessageParam['role']) => {
         switch (role) {
             case 'user':
@@ -73,10 +77,13 @@ export function Chat({
                     />
                 </div>
                 <button
-                    className={`glow-component ${styles['send-prompt-button']}`}
+                    className={`glow-component ${styles['send-prompt-button-container']}`}
                     onClick={onGenerateResponse}
+                    onMouseEnter={onHover}
+                    onMouseLeave={onHoverEnded}
                 >
-                    Send
+                    <Image className={`${styles['send-prompt-button']}`} priority alt={`open-button`} src={Icons.SendIcon} />
+
                 </button>
             </div>
             {/* {onRead ? <button className={'button'} onClick={onRead}>Read</button> : null} */}
