@@ -3,6 +3,7 @@ import styles from './chat.module.css'
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import Image from "next/image";
 import Icons from "../icons/icons";
+import { useChatSettings } from "@/providers/chat-settings-provider/chat-settings-provider";
 
 interface ChatProps {
     messages: ChatCompletionMessageParam[]
@@ -27,6 +28,7 @@ export function Chat({
     isHovering,
     setIsHovering
 }: ChatProps) {
+    const { isSettingsMenuOpen } = useChatSettings()
     const replaceRoleWithName = (role: ChatCompletionMessageParam['role']) => {
         switch (role) {
             case 'user':
@@ -62,10 +64,11 @@ export function Chat({
     }
 
     return (
-        <div className={styles['chat']}>
-            {onClearChat ? <button className={'button'} onClick={onClearChat}>Clear</button> : null}
-            <div className={` glow-component ${isHovering ? '' : styles['response-area-glow']} ${styles['response-area']}`}>
-                <div className={`${styles['response-text']}`}>{renderMessages()}</div>
+        <div className={`${styles['chat']} ${isSettingsMenuOpen ? styles['chat-open-settings'] : ''}`}>
+            {/* {onClearChat ? <button className={'button'} onClick={onClearChat}>Clear</button> : null} */}
+            {/* glow-component ${isHovering ? '' : styles['response-area-glow']} */}
+            <div className={`${isHovering ? styles['response-area-glow'] : ''} ${styles['response-area']} ${isSettingsMenuOpen ? styles['response-area-open-settings'] : ''}`}>
+                <div className={` ${styles['response-text']} ${isSettingsMenuOpen ? styles['response-text-open-settings'] : ''}`}>{renderMessages()}</div>
             </div>
             <div className={`${styles['inline-container']}`}>
                 <div className={`glow-component ${styles['input-bar']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded}>
@@ -74,6 +77,9 @@ export function Chat({
                         placeholder="Enter a prompt..."
                         value={inputText}
                         onChange={onTextChange}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') onGenerateResponse()
+                        }}
                     />
                 </div>
                 <button

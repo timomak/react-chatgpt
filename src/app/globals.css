@@ -8,8 +8,8 @@
   --white-color: #BFBFBF;
   --general-spacing: 16px;
   --window-spacing: 32px;
-
-
+  --settings-menu-close: 40px;
+  --settings-menu-open: 140px;
 }
 
 @media (prefers-color-scheme: dark) {

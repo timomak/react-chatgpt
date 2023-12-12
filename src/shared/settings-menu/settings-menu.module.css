@@ -1,10 +1,21 @@
+.settings-menu {
+    position: absolute;
+    height: var(--settings-menu-open);
+    left: 0;
+    right: 0;
+    padding-left: var(--general-spacing);
+    padding-right: var(--general-spacing);
+}
+
+.settings-menu-closed {
+    height: var(--settings-menu-close);
+}
+
 .open-button-container {
-    height: 40px;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
     display: flex;
-    flex: 1;
-    width: 100%;    
+    justify-content: center;
+    margin-top: calc(var(--general-spacing) / 2);    
 }
 
 .open-button {
@@ -13,18 +24,6 @@
 
 .open-button--open {
     transform: rotate(180deg);
-}
-
-.settings-menu {
-    height: 180px;
-    margin-bottom: var(--general-spacing);
-    transition: height .3s, background-color .3s, overflow-y .3s;
-    overflow-y: visible;
-}
-
-.settings-menu-closed {
-    height: 40px;
-    overflow-y: hidden;
 }
 
 .bots-list {
@@ -42,13 +41,14 @@
     text-align: center;
     align-items: center;
     padding: var(--general-spacing) 0;
-
+    user-select: none;
 }
 
 .bot-image {
     height: 45px;
     width: 45px;
     margin-bottom: var(--general-spacing);
+    user-select: none;
 }
 
 .bot-description {

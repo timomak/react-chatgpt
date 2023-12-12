@@ -11,7 +11,7 @@ export function PageWrapper({
 }: PageWrapperProps) {
     return (
         <div className="page-wrapper">
-            <div className="page-wrapper--content">{children}</div>
+            {children}
         </div>
     )
 }
