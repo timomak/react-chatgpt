@@ -73,8 +73,6 @@ export default function HomeScreen() {
         const runResponse = await openai.beta.threads.runs.create(threadId, {
             assistant_id: assistantId,
         })
-
-        console.log("Thread runResponse:", runResponse)
         handleThreadRunStatus(threadId, runResponse)
     }
 
@@ -83,6 +81,7 @@ export default function HomeScreen() {
             role: 'user',
             content: inputText
         });
+        setInputText('')
 
         const addNewMessage = messages.slice(0);
         addNewMessage.push({ role: 'user', content: inputText })

@@ -5,6 +5,7 @@
     right: 0;
     padding-left: var(--general-spacing);
     padding-right: var(--general-spacing);
+    z-index: 100px;
 }
 
 .settings-menu-closed {
