@@ -56,6 +56,7 @@
     justify-content: flex-start;
     border-radius: var(--general-spacing);
     box-shadow: 0 0 10px rgba(255,255,255, .3);
+    flex-direction: column;
 }
 
 .close-button-container {
@@ -72,4 +73,48 @@
     font-size: 1.5rem;
     transform: rotate(45deg);
     user-select: none;
+    transition: color .3s;
+}
+
+.close-button:hover {
+    color: white;
+}
+
+/* Settings TABS Styling */
+.tabs {
+}
+
+.tabs-buttons {
+    display: flex;
+    gap: var(--general-spacing);
+}
+
+.tab-button {
+    padding: 8px;
+    color: gray;
+    font-size: large;
+    font-weight: 500;
+    transition: color .2s;
+}
+
+.tab-button-current {
+    font-weight: 500;
+    color: white;
+}
+
+
+.tab {
+}
+
+.tab-title {
+    color: white;
+    font-weight: 500;
+    font-size: 2rem;
+}
+
+.tab-page-container {
+    padding: var(--general-spacing);
+    display: flex;
+    flex-direction: column;
+    gap: var(--general-spacing);
 }

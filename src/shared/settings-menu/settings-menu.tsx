@@ -73,7 +73,7 @@ export function SettingsMenu({
                     <Image className={styles['bot-image']} priority alt={`bots-list-bot-${bot.name}-${index}`} src={Icons.Bot1} />
 
                     <div className={styles['bot-name']}>{bot.name}</div>
-                    <div className={styles['bot-description']}>{bot.model}</div>
+                    {/* <div className={styles['bot-description']}>{bot.model}</div> */}
                 </button>
             </Fragment>
         )

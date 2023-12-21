@@ -35,18 +35,18 @@ export function Chat({
     onCreateNewThread,
     currentBot
 }: ChatProps) {
-    const { isSettingsMenuOpen } = useChatSettings()
+    const { isSettingsMenuOpen, chatUsername } = useChatSettings()
     const replaceRoleWithName = useCallback((role: ChatCompletionMessageParam['role']) => {
         switch (role) {
             case 'user':
-                return 'Timo'
+                return chatUsername || "You"
             case 'assistant':
                 if (currentBot) return currentBot.name
                 return 'Bot'
             default:
                 return role
         }
-    }, [currentBot])
+    }, [currentBot, chatUsername])
 
     const renderMessages = useMemo(() => {
         return (
@@ -57,7 +57,7 @@ export function Chat({
                 </div>
             ))
         )
-    }, [messages, currentBot])
+    }, [messages, currentBot, chatUsername])
 
     const onHover = () => {
         setIsHovering(true)

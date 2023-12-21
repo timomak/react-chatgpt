@@ -1,0 +1,46 @@
+.text-input {
+}
+
+.title {
+    color: gray;
+    margin-bottom: 8px;
+}
+
+.input-container {
+    display: flex;
+}
+
+.input {
+    outline: none;
+    border: 2px solid gray;
+    border-radius: 12px;
+    background-color: transparent;
+    display: flex;
+    flex: 1;
+    height: 45px;
+    color: var(--white-color);
+    padding: 0 8px;
+    user-select: none;
+}
+
+.button {
+    color: var(--white-color);
+    height: 45px;
+    border: 2px solid gray;
+    margin-left: 8px;
+    width: 75px;
+    border-radius: 12px;
+    user-select: none;
+    font-weight: bolder;
+    transition: color .3s, border .3s;
+}
+
+.button:active {
+    color: gray !important;
+    border: 2px solid var(--primary-color) !important;
+}
+
+.button:hover {
+    border: 2px solid white;
+    color: white;
+}
