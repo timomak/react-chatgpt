@@ -16,9 +16,10 @@ export default function HomeScreen() {
     const [isNotHoveringChat, setIsNotHoveringChat] = useState(false);
     const [inputText, setInputText] = useState('');
     const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
-    const [bots, setBots] = useState<OpenAI.Beta.Assistants.Assistant[] | undefined>([]);
 
     const {
+        bots,
+        setBots,
         openAI_apiKey,
         isSettingsMenuOpen,
         setIsSettingsMenuOpen,

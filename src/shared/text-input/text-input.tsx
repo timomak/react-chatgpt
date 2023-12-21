@@ -23,7 +23,6 @@ export function TextInput({
     onCancel,
     cancelButtonText = 'Cancel',
 }: TextInputProps) {
-
     return (
         <div className={styles['text-input']}>
             {title ? <div className={styles['title']}>{title}</div> : null}

@@ -1,0 +1,19 @@
+.bot-item {
+    border-radius: 12px;
+    border: 2px solid gray;
+    display: flex;
+    padding: 0 var(--general-spacing);
+    align-items: center;
+    justify-content: space-between;
+    height: 45px;
+}
+
+.label {
+    color: var(--white-color);
+    user-select: none;
+    font-weight: bold;
+}
+
+.button {
+    color: red;
+}

@@ -3,6 +3,7 @@ import styles from './settings-modal.module.css'
 import OpenAI from 'openai';
 import { useCallback, useMemo, useState } from 'react';
 import { TextInput } from '../text-input/text-input';
+import { BotItem } from '../bot-item/bot-item';
 
 
 interface SettingsModalProps {
@@ -11,6 +12,8 @@ interface SettingsModalProps {
 
 export function SettingsModal({ }: SettingsModalProps) {
     const {
+        bots,
+        setBots,
         chatUsername,
         setChatUsername,
         openAI_apiKey,
@@ -20,7 +23,26 @@ export function SettingsModal({ }: SettingsModalProps) {
     } = useChatSettings();
 
     const [currentTabIndex, setCurrentTabIndex] = useState(0);
-    const [apiKey, setApiKey] = useState(openAI_apiKey)
+    const [apiKey, setApiKey] = useState(openAI_apiKey);
+
+    const openai = new OpenAI({ apiKey: openAI_apiKey, dangerouslyAllowBrowser: true });
+
+
+    const handleDeleteAssistant = async (botId: string) => {
+        await openai.beta.assistants.del(botId);
+        const allBots = bots?.filter((bot) => bot.id !== botId)
+        setBots(allBots || [])
+    }
+
+    const botsTab = useMemo(() => {
+        return (
+            <div className={`${styles['tab-page-container']}`}>
+                {bots?.map((bot) => (
+                    <BotItem bot={bot} onDelete={handleDeleteAssistant} />
+                ))}
+            </div>
+        )
+    }, [bots, handleDeleteAssistant])
 
     const generalTab = useMemo(() => {
         return (
@@ -57,14 +79,14 @@ export function SettingsModal({ }: SettingsModalProps) {
             },
             {
                 title: 'Bots',
-                component: generalTab
+                component: botsTab
             },
             {
                 title: 'Advanced',
                 component: generalTab
             },
         ]
-    }, [generalTab])
+    }, [generalTab, botsTab])
 
     const horizontalTabs = useCallback(() => {
         return (

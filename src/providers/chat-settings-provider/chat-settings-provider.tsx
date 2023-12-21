@@ -4,6 +4,8 @@ import OpenAI from "openai";
 import { ReactNode, createContext, useContext, useMemo, useState } from "react";
 
 export interface ChatSettingsContextProperties {
+    bots: OpenAI.Beta.Assistants.Assistant[] | undefined;
+    setBots: (bots: OpenAI.Beta.Assistants.Assistant[]) => void;
     chatUsername: string | undefined;
     setChatUsername: (username: string) => void;
     openAI_apiKey: string | undefined;
@@ -36,9 +38,13 @@ export function ChatSettingsProvider({ children }: ChatSettingsProviderProps) {
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
     const [currentBot, setCurrentBot] = useState<OpenAI.Beta.Assistants.Assistant>();
     const [currentThreadId, setCurrentThreadId] = useState<string>();
+    const [bots, setBots] = useState<OpenAI.Beta.Assistants.Assistant[] | undefined>([]);
+
 
     const value = useMemo<ChatSettingsContextProperties>(
         () => ({
+            bots,
+            setBots,
             chatUsername,
             setChatUsername,
             openAI_apiKey,
@@ -53,6 +59,8 @@ export function ChatSettingsProvider({ children }: ChatSettingsProviderProps) {
             setCurrentThreadId
         }),
         [
+            bots,
+            setBots,
             chatUsername,
             setChatUsername,
             isSettingsMenuOpen,
