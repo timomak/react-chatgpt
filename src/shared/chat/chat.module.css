@@ -30,10 +30,16 @@
   animation: rainbow-bg 4s linear;
 	animation-iteration-count: infinite;
   animation-play-state: running;
+  animation-delay: 500ms;
   border-radius: 8px;
   transition: outline .3s;
-  box-shadow: 0 0 20px rgba(255,255,255, .3);
+  transition-delay: 400ms;
   outline: 0 solid var(--main-bg-color);
+  opacity: 1;
+}
+
+.response-text-hidden {
+  display: none;
 }
 
 .response-area-open-settings {
@@ -92,10 +98,8 @@
   animation-play-state: paused !important;
   box-shadow: none !important;
   outline: var(--general-spacing) solid var(--main-bg-color);
+  transition-delay: 400ms;
 }
-
-
-
 
 .response-text {
   overflow-y: scroll;
@@ -103,6 +107,31 @@
 }
 
 .response-text-open-settings {
+}
+
+.thread-button {
+  /* background-color: red; */
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: var(--general-spacing);
+  cursor: pointer;
+  user-select: none;
+}
+
+.thread-image {
+  height: 40px;
+  width: 40px;
+}
+
+.thread-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--white-color);
+  user-select: none;
 }
 
 .inline-container {

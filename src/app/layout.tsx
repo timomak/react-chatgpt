@@ -19,9 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <ChatSettingsProvider>
-        <body className={inter.className}>{children}</body>
-      </ChatSettingsProvider>
+      <body className={inter.className}>{children}</body>
     </html>
   )
 }

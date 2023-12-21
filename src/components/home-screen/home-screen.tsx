@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import OpenAI from "openai";
 import { Chat } from '@/shared/chat/chat';
 import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
@@ -12,8 +12,6 @@ import { useChatSettings } from '@/providers/chat-settings-provider/chat-setting
 const apiKey = process.env.OPENAI_API_KEY
 const openai = new OpenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
-const assistantId = 'asst_d1Pin7e2l00X3KyHQxPUmSY3'
-const messageThreadId = "thread_2pKwpnNoVpT7SYrBtetkuuaI"
 
 export default function HomeScreen() {
     const [isNotHoveringChat, setIsNotHoveringChat] = useState(false);
@@ -21,6 +19,8 @@ export default function HomeScreen() {
     const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
     const [bots, setBots] = useState<OpenAI.Beta.Assistants.Assistant[] | undefined>([]);
     const { isSettingsMenuOpen, setIsSettingsMenuOpen } = useChatSettings()
+    const [currentThreadId, setCurrentThreadId] = useState<string>();
+    const [currentBot, setCurrentBot] = useState<OpenAI.Beta.Assistants.Assistant>();
 
     const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
         setInputText(e.target.value);
@@ -37,7 +37,7 @@ export default function HomeScreen() {
         }
     }
 
-    const retrieveThreadMessages = async (threadId: string, readLastMessage?: boolean) => {
+    const retrieveThreadMessages = useCallback(async (threadId: string, readLastMessage?: boolean) => {
         const threadMessages = await openai.beta.threads.messages.list(threadId);
 
         if (threadMessages.data.length > 0) {
@@ -54,9 +54,10 @@ export default function HomeScreen() {
                 handleReadLastMessage(allMessages)
             }
         } else {
-            console.log("No messages yet!")
+            const newMessage: ChatCompletionMessageParam = { role: 'assistant', content: `My instructions: \n${currentBot?.instructions}` }
+            setMessages([newMessage])
         }
-    }
+    }, [currentBot])
 
     const handleThreadRunStatus = async (threadId: string, run: OpenAI.Beta.Threads.Runs.Run) => {
         let isComplete = false
@@ -69,49 +70,57 @@ export default function HomeScreen() {
     }
 
 
-    const handleRunThread = async (threadId: string) => {
+    const handleRunThread = useCallback(async (threadId: string) => {
         const runResponse = await openai.beta.threads.runs.create(threadId, {
-            assistant_id: assistantId,
+            assistant_id: currentBot?.id,
         })
         handleThreadRunStatus(threadId, runResponse)
-    }
+
+    }, [currentBot])
 
     const addMessageToThread = async () => {
-        const threadMessages = await openai.beta.threads.messages.create(messageThreadId, {
-            role: 'user',
-            content: inputText
-        });
-        setInputText('')
+        if (currentThreadId) {
+            const threadMessages = await openai.beta.threads.messages.create(currentThreadId, {
+                role: 'user',
+                content: inputText
+            });
+            setInputText('')
 
-        const addNewMessage = messages.slice(0);
-        addNewMessage.push({ role: 'user', content: inputText })
-        setMessages(addNewMessage)
+            const addNewMessage = messages.slice(0);
+            addNewMessage.push({ role: 'user', content: inputText })
+            setMessages(addNewMessage)
 
-        handleRunThread(messageThreadId)
+            handleRunThread(currentThreadId)
+        }
     }
 
-    const retrieveThread = async (threadId: string) => {
-        const thread = await openai.beta.threads.retrieve(threadId);
+    const createThread = async () => {
+        const newThread = await openai.beta.threads.create();
+        console.log("New thread: ", newThread)
+        setCurrentThreadId(newThread.id)
     }
 
-    const createThread = async (userName: string, assistantName = 'sky') => {
-        const assistants = await openai.beta.assistants.list();
-        const currentAssistant = assistants.data.find((aiAssistant) => aiAssistant.name?.toLowerCase() === assistantName)
+    const handleBotSelected = useCallback((bot: OpenAI.Beta.Assistants.Assistant) => {
+        setCurrentBot(bot)
+        handleClearChat()
+    }, [])
 
-        const newThread = await openai.beta.threads.create({ metadata: { 'assistantId': currentAssistant?.id, currentUser: userName } });
-        console.log("newThread", newThread)
-    }
+    const handleClearChat = useCallback(() => {
+        setMessages([])
+        setCurrentThreadId(undefined)
+    }, [])
 
     const retrieveAllAssistants = async () => {
         const assistants = await openai.beta.assistants.list();
         setBots(assistants.data)
     }
 
+    useEffect(() => {
+        if (currentBot && currentThreadId) retrieveThreadMessages(currentThreadId)
+    }, [currentBot, currentThreadId])
 
     useEffect(() => {
         retrieveAllAssistants()
-        // createThread("Timo")
-        retrieveThreadMessages(messageThreadId)
     }, [])
 
     return (
@@ -122,17 +131,23 @@ export default function HomeScreen() {
                 bots={bots}
                 isHovering={isNotHoveringChat}
                 setIsHovering={setIsNotHoveringChat}
+                onSelectedBot={handleBotSelected}
+                currentBot={currentBot}
             />
-            <Chat
-                messages={messages}
-                title={"Enora Alpha v0.0.1"}
-                onGenerateResponse={addMessageToThread}
-                inputText={inputText}
-                onTextChange={handleInputChange}
-                onRead={() => handleReadLastMessage(messages)}
-                isHovering={isNotHoveringChat}
-                setIsHovering={setIsNotHoveringChat}
-            />
+            {currentBot ? (
+                <Chat
+                    messages={messages}
+                    title={"Enora Alpha v0.0.1"}
+                    onGenerateResponse={addMessageToThread}
+                    inputText={inputText}
+                    onTextChange={handleInputChange}
+                    onRead={() => handleReadLastMessage(messages)}
+                    isHovering={isNotHoveringChat}
+                    setIsHovering={setIsNotHoveringChat}
+                    onCreateNewThread={createThread}
+                    currentBot={currentBot}
+                />
+            ) : <div />}
         </PageWrapper>
     );
 }

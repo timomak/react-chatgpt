@@ -1,9 +1,12 @@
-import { ChangeEvent, ReactElement, useState } from "react";
+'use client'
+
+import { ChangeEvent, Fragment, ReactElement, useCallback, useMemo, useState } from "react";
 import styles from './chat.module.css'
 import { ChatCompletionMessageParam } from "openai/resources/index.mjs";
 import Image from "next/image";
 import Icons from "../icons/icons";
 import { useChatSettings } from "@/providers/chat-settings-provider/chat-settings-provider";
+import OpenAI from "openai";
 
 interface ChatProps {
     messages: ChatCompletionMessageParam[]
@@ -15,6 +18,8 @@ interface ChatProps {
     onRead?: () => void;
     isHovering: boolean;
     setIsHovering: (anythingButChat: boolean) => void;
+    onCreateNewThread: () => void;
+    currentBot?: OpenAI.Beta.Assistants.Assistant;
 }
 
 export function Chat({
@@ -26,25 +31,24 @@ export function Chat({
     onClearChat,
     onRead,
     isHovering,
-    setIsHovering
+    setIsHovering,
+    onCreateNewThread,
+    currentBot
 }: ChatProps) {
     const { isSettingsMenuOpen } = useChatSettings()
-    const replaceRoleWithName = (role: ChatCompletionMessageParam['role']) => {
+    const replaceRoleWithName = useCallback((role: ChatCompletionMessageParam['role']) => {
         switch (role) {
             case 'user':
-
                 return 'Timo'
-
             case 'assistant':
-
-                return 'Enora'
-
+                if (currentBot) return currentBot.name
+                return 'Bot'
             default:
                 return role
         }
-    }
+    }, [currentBot])
 
-    const renderMessages = () => {
+    const renderMessages = useMemo(() => {
         return (
             messages.map((message, index) => (
                 <div key={`new-message-id-${index}`} className={styles['message']}>
@@ -53,7 +57,7 @@ export function Chat({
                 </div>
             ))
         )
-    }
+    }, [messages, currentBot])
 
     const onHover = () => {
         setIsHovering(true)
@@ -63,12 +67,26 @@ export function Chat({
         setIsHovering(false)
     }
 
+    const renderCreateBotButton = useCallback(() => {
+        // return null;
+        return (
+            <Fragment key={`create-thread-button`}>
+                <a className={`${styles['thread-button']}`} onClick={onCreateNewThread}>
+                    <Image className={styles['thread-image']} priority alt={`threads-list-thread-create-thread-image`} src={Icons.AddBotIcon} />
+                    <div className={styles['thread-text']}>{`Start new chat with ${currentBot?.name} AI`}</div>
+                    {/* <div className={`hidden ${styles['hidden-description']}`}>test</div> */}
+                </a>
+            </Fragment>
+        )
+    }, [currentBot])
+
     return (
         <div className={`${styles['chat']} ${isSettingsMenuOpen ? styles['chat-open-settings'] : ''}`}>
             {/* {onClearChat ? <button className={'button'} onClick={onClearChat}>Clear</button> : null} */}
             {/* glow-component ${isHovering ? '' : styles['response-area-glow']} */}
             <div className={`${isHovering ? styles['response-area-glow'] : ''} ${styles['response-area']} ${isSettingsMenuOpen ? styles['response-area-open-settings'] : ''}`}>
-                <div className={` ${styles['response-text']} ${isSettingsMenuOpen ? styles['response-text-open-settings'] : ''}`}>{renderMessages()}</div>
+                <div className={` ${styles['response-text']} ${isSettingsMenuOpen ? styles['response-text-open-settings'] : ''} ${messages.length === 0 ? styles['response-text-hidden'] : ''}`}>{renderMessages}</div>
+                {messages.length === 0 ? renderCreateBotButton() : null}
             </div>
             <div className={`${styles['inline-container']}`}>
                 <div className={`glow-component ${styles['input-bar']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded}>

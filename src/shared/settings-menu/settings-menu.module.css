@@ -20,18 +20,24 @@
 }
 
 .open-button {
-    transition: transform .3s;
+    transition: transform .3s, opacity .3s;
 }
 
 .open-button--open {
     transform: rotate(180deg);
 }
 
+.open-button--hidden {
+   opacity: 0;
+}
+
 .bots-list {
     height: 130px;
     border-radius: 8px;
     display: flex;
-    gap: calc(var(--general-spacing));
+    gap: calc(var(--general-spacing) * 1.5);
+    padding-top: var(--general-spacing);
+
 }
 
 .bot {
@@ -43,6 +49,14 @@
     align-items: center;
     padding: var(--general-spacing) 0;
     user-select: none;
+}
+
+.glow-bot::after {
+    opacity: .8;
+}
+
+.glow-bot:before {
+    opacity: 1;
 }
 
 .bot-image {
