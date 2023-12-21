@@ -1,9 +1,8 @@
 .page-wrapper {
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  overflow: hidden;
+  width: 100vw;
+  overflow: hidden !important;
+  position: fixed;
 }
 
 .vertical-list {

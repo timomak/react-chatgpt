@@ -5,6 +5,7 @@ import Icons from '../icons/icons';
 import styles from './settings-menu.module.css'
 import OpenAI from 'openai';
 import Image from 'next/image';
+import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
 
 interface SettingsMenuProps {
     isOpen: boolean;
@@ -25,6 +26,10 @@ export function SettingsMenu({
     onSelectedBot,
     currentBot
 }: SettingsMenuProps) {
+    const {
+        setIsSettingsModalOpen
+    } = useChatSettings();
+
     const onToggleOpenCloseMenu = () => {
         if (isOpen) setIsOpen(false)
         else setIsOpen(true)
@@ -41,9 +46,8 @@ export function SettingsMenu({
     const renderOpenSettingsButton = useCallback(() => {
         return (
             <Fragment key={`bots-list-bot-open-settings`}>
-                <a className={`glow-component ${styles['bot']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} href='https://platform.openai.com/assistants' target='_black'>
-                    <Image className={styles['bot-image']} priority alt={`bots-list-bot-open-settings-image`} src={Icons.AddBotIcon} />
-
+                <a className={`glow-component ${styles['bot']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} onClick={() => setIsSettingsModalOpen(true)}>
+                    <Image className={styles['bot-image']} priority alt={`bots-list-bot-open-settings-image`} src={Icons.SettingsIcon} />
                     <div className={styles['bot-name']}>{"Settings"}</div>
                 </a>
             </Fragment>

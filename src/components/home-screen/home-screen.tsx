@@ -7,10 +7,9 @@ import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
 import { PageWrapper } from '@/shared/page-wrapper/page-wrapper';
 import { SettingsMenu } from '@/shared/settings-menu/settings-menu';
 import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
+import { SettingsModal } from '@/shared/settings-modal/settings-modal';
 
 
-const apiKey = process.env.OPENAI_API_KEY
-const openai = new OpenAI({ apiKey: apiKey, dangerouslyAllowBrowser: true });
 
 
 export default function HomeScreen() {
@@ -18,9 +17,19 @@ export default function HomeScreen() {
     const [inputText, setInputText] = useState('');
     const [messages, setMessages] = useState<ChatCompletionMessageParam[]>([]);
     const [bots, setBots] = useState<OpenAI.Beta.Assistants.Assistant[] | undefined>([]);
-    const { isSettingsMenuOpen, setIsSettingsMenuOpen } = useChatSettings()
-    const [currentThreadId, setCurrentThreadId] = useState<string>();
-    const [currentBot, setCurrentBot] = useState<OpenAI.Beta.Assistants.Assistant>();
+
+    const {
+        openAI_apiKey,
+        isSettingsMenuOpen,
+        setIsSettingsMenuOpen,
+        currentBot,
+        setCurrentBot,
+        currentThreadId,
+        setCurrentThreadId,
+    } = useChatSettings();
+
+    const openai = new OpenAI({ apiKey: openAI_apiKey, dangerouslyAllowBrowser: true });
+
 
     const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
         setInputText(e.target.value);
@@ -148,6 +157,8 @@ export default function HomeScreen() {
                     currentBot={currentBot}
                 />
             ) : <div />}
+
+            <SettingsModal />
         </PageWrapper>
     );
 }
