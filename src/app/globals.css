@@ -6,6 +6,8 @@
   --main-bg-color: #111;
   --primary-color: #C650DA;
   --white-color: #BFBFBF;
+  --red-color: rgba(214, 51, 22, 0.845);
+  --gray-color: gray;
   --general-spacing: 16px;
   --window-spacing: 32px;
   --settings-menu-close: 40px;

@@ -1,11 +1,16 @@
 .bot-item {
     border-radius: 12px;
-    border: 2px solid gray;
+    border: 2px solid var(--gray-color);
     display: flex;
     padding: 0 var(--general-spacing);
     align-items: center;
     justify-content: space-between;
     height: 45px;
+    margin-bottom: 16px;
+}
+
+.bot-item > .button:hover {
+    color: var(--white-color);
 }
 
 .label {
@@ -15,5 +20,6 @@
 }
 
 .button {
-    color: red;
+    color: var(--red-color);
+    transition: color .3s;
 }

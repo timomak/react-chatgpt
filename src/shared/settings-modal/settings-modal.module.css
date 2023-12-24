@@ -60,7 +60,7 @@
 }
 
 .close-button-container {
-    color: gray;
+    color: var(--gray-color);
     font-size: 1.5rem;
     width: 100%;
     display: flex;
@@ -69,7 +69,7 @@
 }
 
 .close-button {
-    color: gray;
+    color: var(--gray-color);
     font-size: 1.5rem;
     transform: rotate(45deg);
     user-select: none;
@@ -84,6 +84,12 @@
 .tabs {
 }
 
+.section-title {
+    color: var(--gray-color);
+    margin-bottom: 8px;
+    font-size: 1.8rem;
+}
+
 .tabs-buttons {
     display: flex;
     gap: var(--general-spacing);
@@ -91,7 +97,7 @@
 
 .tab-button {
     padding: 8px;
-    color: gray;
+    color: var(--gray-color);
     font-size: large;
     font-weight: 500;
     transition: color .2s;

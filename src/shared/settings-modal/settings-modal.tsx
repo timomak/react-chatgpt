@@ -20,13 +20,15 @@ export function SettingsModal({ }: SettingsModalProps) {
         setOpenAI_apiKey,
         isSettingsModalOpen,
         setIsSettingsModalOpen,
+        currentThreadId,
+        setCurrentThreadId,
     } = useChatSettings();
 
     const [currentTabIndex, setCurrentTabIndex] = useState(0);
     const [apiKey, setApiKey] = useState(openAI_apiKey);
+    const [newThreadId, setNewThreadId] = useState(currentThreadId);
 
     const openai = new OpenAI({ apiKey: openAI_apiKey, dangerouslyAllowBrowser: true });
-
 
     const handleDeleteAssistant = async (botId: string) => {
         await openai.beta.assistants.del(botId);
@@ -37,9 +39,14 @@ export function SettingsModal({ }: SettingsModalProps) {
     const botsTab = useMemo(() => {
         return (
             <div className={`${styles['tab-page-container']}`}>
-                {bots?.map((bot) => (
-                    <BotItem bot={bot} onDelete={handleDeleteAssistant} />
-                ))}
+                <div>
+                    {/* <div className={`${styles['section-title']}`}>Default Bots</div> */}
+
+                    <div className={`${styles['section-title']}`}>All Bots</div>
+                    {bots?.map((bot) => (
+                        <BotItem bot={bot} onDelete={handleDeleteAssistant} />
+                    ))}
+                </div>
             </div>
         )
     }, [bots, handleDeleteAssistant])
@@ -71,6 +78,24 @@ export function SettingsModal({ }: SettingsModalProps) {
         )
     }, [apiKey, setApiKey, setOpenAI_apiKey, chatUsername, setChatUsername])
 
+    const advancedTab = useMemo(() => {
+        return (
+            <div className={`${styles['tab-page-container']}`}>
+                <TextInput
+                    title='Message Thread ID'
+                    value={newThreadId}
+                    setValue={setNewThreadId}
+                    placeholder='Enter current thread ID...'
+                    onSubmit={() => newThreadId ? setCurrentThreadId(newThreadId) : null}
+                    onCancel={() => currentThreadId ? setNewThreadId(currentThreadId) : setCurrentThreadId('')}
+                    buttonText='Save'
+                />
+
+
+            </div>
+        )
+    }, [apiKey, setApiKey, setOpenAI_apiKey, chatUsername, setChatUsername])
+
     const tabsData = useMemo(() => {
         return [
             {
@@ -83,7 +108,7 @@ export function SettingsModal({ }: SettingsModalProps) {
             },
             {
                 title: 'Advanced',
-                component: generalTab
+                component: advancedTab
             },
         ]
     }, [generalTab, botsTab])
