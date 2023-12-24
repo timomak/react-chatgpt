@@ -4,6 +4,7 @@ import './globals.css'
 import './common.css'
 import './fancy.css'
 import { ChatSettingsProvider } from '@/providers/chat-settings-provider/chat-settings-provider'
+import { TranslateSettingsProvider } from '@/providers/translate-settings-provider/translate-settings-provider'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ChatSettingsProvider>
-          {children}
-        </ChatSettingsProvider>
+        <TranslateSettingsProvider>
+          <ChatSettingsProvider>
+            {children}
+          </ChatSettingsProvider>
+        </TranslateSettingsProvider>
       </body>
     </html>
   )

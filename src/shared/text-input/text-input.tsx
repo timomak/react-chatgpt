@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import styles from './text-input.module.css'
 
 interface TextInputProps {
@@ -24,42 +25,43 @@ export function TextInput({
     cancelButtonText = 'Cancel',
 }: TextInputProps) {
     return (
-        <div className={styles['text-input']}>
-            {title ? <div className={styles['title']}>{title}</div> : null}
+        <Fragment key={`text-input-${title}`}>
+            <div className={styles['text-input']}>
+                {title ? <div className={styles['title']}>{title}</div> : null}
 
-            <div className={styles['input-container']}>
+                <div className={styles['input-container']}>
 
-                <input
-                    placeholder={placeholder}
-                    className={`${styles['input']} ${styles[`input-variant-${variant}`]}`}
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' && onSubmit) onSubmit()
-                    }}
-                />
+                    <input
+                        placeholder={placeholder}
+                        className={`${styles['input']} ${styles[`input-variant-${variant}`]}`}
+                        value={value}
+                        onChange={(e) => setValue(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && onSubmit) onSubmit()
+                        }}
+                    />
 
-                {onCancel ? (
-                    <button
-                        className={`${styles['button']}`}
-                        type='button'
-                        onClick={() => onCancel ? onCancel() : null}
-                    >
-                        {cancelButtonText}
-                    </button>
-                ) : null}
+                    {onCancel ? (
+                        <button
+                            className={`${styles['button']}`}
+                            type='button'
+                            onClick={() => onCancel ? onCancel() : null}
+                        >
+                            {cancelButtonText}
+                        </button>
+                    ) : null}
 
-                {onSubmit ? (
-                    <button
-                        className={`${styles['button']}`}
-                        type='button'
-                        onClick={() => onSubmit ? onSubmit() : null}
-                    >
-                        {buttonText}
-                    </button>
-                ) : null}
+                    {onSubmit ? (
+                        <button
+                            className={`${styles['button']}`}
+                            type='button'
+                            onClick={() => onSubmit ? onSubmit() : null}
+                        >
+                            {buttonText}
+                        </button>
+                    ) : null}
+                </div>
             </div>
-
-        </div>
+        </Fragment>
     )
 }

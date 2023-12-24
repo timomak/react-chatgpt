@@ -179,14 +179,31 @@
   user-select: none;
 }
 
+.record-toggle-button-container {
+  border-radius: 30px;
+  height: 80px;
+  align-self: center;
+  font-weight: 300;
+  font-size: 22px;
+  /* width: 150px; */
+  display: flex;
+  flex: 1;
+  margin-left: var(--general-spacing);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .message {
   display: flex;
   gap: 8px;
   margin-bottom: 8px;
+  color: var(--white-color);
 }
 
 .sender-text {
   min-width: 100px;
+  color: var(--primary-color);
 }
 
 

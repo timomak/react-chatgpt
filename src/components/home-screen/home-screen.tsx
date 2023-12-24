@@ -9,9 +9,6 @@ import { SettingsMenu } from '@/shared/settings-menu/settings-menu';
 import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
 import { SettingsModal } from '@/shared/settings-modal/settings-modal';
 
-
-
-
 export default function HomeScreen() {
     const [isNotHoveringChat, setIsNotHoveringChat] = useState(false);
     const [inputText, setInputText] = useState('');
