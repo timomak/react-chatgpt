@@ -30,6 +30,8 @@ export function ChatSettingsProvider({ children }: ChatSettingsProviderProps) {
     // General Settings
     const apiKey = process.env.OPENAI_API_KEY;
     const username = process.env.CHAT_USERNAME;
+    const threadId = process.env.MAIN_THREAD_ID;
+
     const [openAI_apiKey, setOpenAI_apiKey] = useState(apiKey);
     const [chatUsername, setChatUsername] = useState(username);
 
@@ -37,7 +39,7 @@ export function ChatSettingsProvider({ children }: ChatSettingsProviderProps) {
     const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(true);
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
     const [currentBot, setCurrentBot] = useState<OpenAI.Beta.Assistants.Assistant>();
-    const [currentThreadId, setCurrentThreadId] = useState<string>();
+    const [currentThreadId, setCurrentThreadId] = useState(threadId);
     const [bots, setBots] = useState<OpenAI.Beta.Assistants.Assistant[] | undefined>([]);
 
 

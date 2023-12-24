@@ -1,7 +1,7 @@
 import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
 import styles from './settings-modal.module.css'
 import OpenAI from 'openai';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { TextInput } from '../text-input/text-input';
 import { BotItem } from '../bot-item/bot-item';
 
@@ -94,7 +94,7 @@ export function SettingsModal({ }: SettingsModalProps) {
 
             </div>
         )
-    }, [apiKey, setApiKey, setOpenAI_apiKey, chatUsername, setChatUsername])
+    }, [setCurrentThreadId, currentThreadId, newThreadId, setNewThreadId])
 
     const tabsData = useMemo(() => {
         return [
@@ -126,6 +126,11 @@ export function SettingsModal({ }: SettingsModalProps) {
             </div>
         )
     }, [tabsData, currentTabIndex])
+
+    useEffect(() => {
+        setNewThreadId(currentThreadId)
+    }, [currentThreadId])
+
 
     return (
         <div className={`${styles['settings-modal']} ${isSettingsModalOpen ? styles['settings-modal-open'] : ''}`} >
