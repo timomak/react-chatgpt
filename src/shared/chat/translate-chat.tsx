@@ -25,6 +25,8 @@ interface ChatProps {
     isTranslatorView?: boolean;
     onTranslateFirstToSecond?: () => void;
     onTranslateSecondToFirst?: () => void;
+    isRecordingFirstToSecond?: boolean;
+    isRecordingSecondToFirst?: boolean;
 }
 
 export function Chat({
@@ -43,6 +45,8 @@ export function Chat({
     translateMessages,
     onTranslateFirstToSecond,
     onTranslateSecondToFirst,
+    isRecordingFirstToSecond,
+    isRecordingSecondToFirst
 }: ChatProps) {
     const { isSettingsMenuOpen, chatUsername } = useChatSettings()
     const replaceRoleWithName = useCallback((role: ChatCompletionMessageParam['role']) => {
