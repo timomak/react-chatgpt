@@ -57,9 +57,9 @@ export default function HomeScreen() {
             setMessages(allMessages.reverse())
             setInputText('')
 
-            if (readLastMessage) {
-                handleReadLastMessage(allMessages)
-            }
+            // if (readLastMessage) {
+            //     handleReadLastMessage(allMessages)
+            // }
         } else {
             const newMessage: ChatCompletionMessageParam = { role: 'assistant', content: `My instructions: \n${currentBot?.instructions}` }
             setMessages([newMessage])

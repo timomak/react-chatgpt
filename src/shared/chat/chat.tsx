@@ -8,7 +8,7 @@ import Icons from "../icons/icons";
 import { useChatSettings } from "@/providers/chat-settings-provider/chat-settings-provider";
 import OpenAI from "openai";
 
-export interface TranslateChatMessagesProps { role: string, content: string }
+export interface TranslateChatMessagesProps { role: string, content: string, variant?: 'default' | 'variant-1' | 'variant-2' }
 interface ChatProps {
     messages?: ChatCompletionMessageParam[];
     translateMessages?: TranslateChatMessagesProps[];
@@ -46,7 +46,7 @@ export function Chat({
     onTranslateFirstToSecond,
     onTranslateSecondToFirst,
     isRecordingFirstToSecond,
-    isRecordingSecondToFirst
+    isRecordingSecondToFirst,
 }: ChatProps) {
     const { isSettingsMenuOpen, chatUsername } = useChatSettings()
     const replaceRoleWithName = useCallback((role: ChatCompletionMessageParam['role']) => {
@@ -66,19 +66,25 @@ export function Chat({
             return (
                 translateMessages?.map((message, index) => (
                     <div key={`new-message-id-${index}`} className={styles['message']}>
-                        <div className={`${styles['sender-text']}`}>{message.role}</div>
-                        <div className={`${styles['receiver-text']}`}>{message.content as string}</div>
+                        <div className={`${styles['sender-text']} ${styles[message.variant || 'default']}`}>{message.role}</div>
+                        <div className={`${styles['receiver-text']} ${styles[message.variant || 'default']}`}>{message.content as string}</div>
                     </div>
                 ))
             )
         }
         return (
-            messages?.map((message, index) => (
-                <div key={`new-message-id-${index}`} className={styles['message']}>
-                    <div className={`${styles[`${message.role}`]} ${styles['sender-text']}`}>{replaceRoleWithName(message.role)}</div>
-                    <div className={`${styles[`${message.role}`]} ${styles['receiver-text']}`}>{message.content as string}</div>
-                </div>
-            ))
+            messages?.map((message, index) => {
+                let messageContent = message.content as string
+                if (messageContent.includes("[🔓JAILBREAK]") && index > 0) {
+                    messageContent = (message.content as string).split("[🔓JAILBREAK]")[1]
+                }
+                return (
+                    <div key={`new-message-id-${index}`} className={styles['message']}>
+                        <div className={`${styles[`${message.role}`]} ${styles['sender-text']}`}>{replaceRoleWithName(message.role)}</div>
+                        <div className={`${styles[`${message.role}`]} ${styles['receiver-text']}`}>{messageContent}</div>
+                    </div>
+                )
+            })
         )
     }, [messages, currentBot, chatUsername, isTranslatorView, translateMessages])
 
@@ -90,13 +96,13 @@ export function Chat({
         setIsHovering(false)
     }
 
-    const renderCreateBotButton = useCallback(() => {
+    const renderCreateThreadButton = useCallback(() => {
         // return null;
         return (
             <Fragment key={`create-thread-button`}>
                 <a className={`${styles['thread-button']}`} onClick={onCreateNewThread}>
                     <Image className={styles['thread-image']} priority alt={`threads-list-thread-create-thread-image`} src={Icons.AddBotIcon} />
-                    <div className={styles['thread-text']}>{`Start new chat with ${currentBot?.name} AI`}</div>
+                    <div className={styles['thread-text']}>{`Start new chat with ${currentBot?.name}`}</div>
                     {/* <div className={`hidden ${styles['hidden-description']}`}>test</div> */}
                 </a>
             </Fragment>
@@ -105,53 +111,49 @@ export function Chat({
 
     return (
         <div className={`${styles['chat']} ${isSettingsMenuOpen ? styles['chat-open-settings'] : ''}`}>
-            <div className={`${isHovering ? styles['response-area-glow'] : ''} ${styles['response-area']} ${isSettingsMenuOpen ? styles['response-area-open-settings'] : ''}`}>
+            <div className={`${isHovering || isRecordingFirstToSecond || isRecordingSecondToFirst ? styles['response-area-glow'] : ''} ${styles['response-area']} ${isSettingsMenuOpen ? styles['response-area-open-settings'] : ''}`}>
                 <div className={` ${styles['response-text']} ${isSettingsMenuOpen ? styles['response-text-open-settings'] : ''} ${messages?.length === 0 ? styles['response-text-hidden'] : ''}`}>{renderMessages}</div>
-                {messages?.length === 0 && !isTranslatorView ? renderCreateBotButton() : null}
+                {messages?.length === 0 && !isTranslatorView ? renderCreateThreadButton() : null}
             </div>
-            {isTranslatorView ? (
-                <div className={`${styles['inline-container']}`}>
-                    <button
-                        className={`glow-component ${styles['record-toggle-button-container']}`}
-                        onClick={onTranslateFirstToSecond}
-                        onMouseEnter={onHover}
-                        onMouseLeave={onHoverEnded}
-                    >
-                        Translate to English
-                    </button>
+            <div onMouseEnter={onHover} onMouseLeave={onHoverEnded}>
+                {isTranslatorView ? (
+                    <div className={`${styles['inline-container']}`}>
+                        <button
+                            className={`${isRecordingFirstToSecond ? styles['record-button-active'] : 'glow-component'} ${isRecordingFirstToSecond ? styles['variant-1'] : ''} ${styles['record-toggle-button-container']}`}
+                            onClick={onTranslateFirstToSecond}
+                        >
+                            Translate to English
+                        </button>
 
-                    <button
-                        className={`glow-component ${styles['record-toggle-button-container']}`}
-                        onClick={onTranslateSecondToFirst}
-                        onMouseEnter={onHover}
-                        onMouseLeave={onHoverEnded}
-                    >
-                        Translate to French
-                    </button>
-                </div>
-            ) : (
-                <div className={`${styles['inline-container']}`}>
-                    <div className={`glow-component ${styles['input-bar']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded}>
-                        <input
-                            className={styles['textarea']}
-                            placeholder="Enter a prompt..."
-                            value={inputText}
-                            onChange={onTextChange}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && onGenerateResponse) onGenerateResponse()
-                            }}
-                        />
+                        <button
+                            className={`${isRecordingSecondToFirst ? styles['record-button-active'] : 'glow-component'} ${isRecordingSecondToFirst ? styles['variant-2'] : ''} ${styles['record-toggle-button-container']}`}
+                            onClick={onTranslateSecondToFirst}
+                        >
+                            Translate to French
+                        </button>
                     </div>
-                    <button
-                        className={`glow-component ${styles['send-prompt-button-container']}`}
-                        onClick={onGenerateResponse}
-                        onMouseEnter={onHover}
-                        onMouseLeave={onHoverEnded}
-                    >
-                        <Image className={`${styles['send-prompt-button']}`} priority alt={`open-button`} src={Icons.SendIcon} />
-                    </button>
-                </div>
-            )}
+                ) : (
+                    <div className={`${styles['inline-container']}`}>
+                        <div className={`glow-component ${styles['input-bar']}`}>
+                            <input
+                                className={styles['textarea']}
+                                placeholder="Enter a prompt..."
+                                value={inputText}
+                                onChange={onTextChange}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && onGenerateResponse) onGenerateResponse()
+                                }}
+                            />
+                        </div>
+                        <button
+                            className={`glow-component ${styles['send-prompt-button-container']}`}
+                            onClick={onGenerateResponse}
+                        >
+                            <Image className={`${styles['send-prompt-button']}`} priority alt={`open-button`} src={Icons.SendIcon} />
+                        </button>
+                    </div>
+                )}
+            </div>
             {/* {onRead ? <button className={'button'} onClick={onRead}>Read</button> : null} */}
         </div>
     )

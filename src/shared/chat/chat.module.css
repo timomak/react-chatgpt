@@ -45,7 +45,7 @@
 .response-area-open-settings {
 }
 
-@keyframes rainbow-bg{
+@keyframes rainbow-bg {
   100%,0%{
     box-shadow: 0 0 20px rgba(255,0,0, .89);
   }
@@ -141,7 +141,6 @@
   margin-top: calc(var(--general-spacing) * 2);
 }
 
-
 .input-bar {
   display: flex;
   flex: 1;
@@ -163,7 +162,7 @@
 }
 
 .send-prompt-button-container {
-  border-radius: 30px;
+  border-radius: 10px;
   height: 60px;
   align-self: center;
   font-weight: 500;
@@ -180,11 +179,11 @@
 }
 
 .record-toggle-button-container {
-  border-radius: 30px;
+  border-radius: 10px;
   height: 80px;
   align-self: center;
-  font-weight: 300;
-  font-size: 22px;
+  font-weight: bold;
+  font-size: 18px;
   /* width: 150px; */
   display: flex;
   flex: 1;
@@ -194,9 +193,25 @@
   justify-content: center;
 }
 
+@keyframes recording-container {
+  100%,0%{
+    box-shadow: 0 0 20px rgba(255,0,0, .89);
+  }
+  50%{
+    box-shadow: 0 0 0 rgba(255, 0, 128, 0);
+  }
+}
+
+.record-button-active {
+  animation: recording-container 2s linear;
+	animation-iteration-count: infinite;
+  animation-play-state: running;
+  color: var(--white-color) !important;
+}
+
 .message {
   display: flex;
-  gap: 8px;
+  gap: 20px;
   margin-bottom: 8px;
   color: var(--white-color);
 }
@@ -220,3 +235,14 @@
   color: #2ECC71;
 }
 
+.default {
+  color: white;
+}
+
+.variant-1 {
+  color: #2ECC71;
+}
+
+.variant-2 {
+  color: #3498DB;
+}

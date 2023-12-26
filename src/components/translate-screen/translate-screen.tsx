@@ -81,7 +81,7 @@ export default function TranslateScreen() {
                     console.log('whisper response', res)
                     const newText = res.text
                     const cloneMessages = messages.slice()
-                    cloneMessages.push({ role: 'Translated to English', content: newText })
+                    cloneMessages.push({ role: 'Translated to English', content: newText, variant: 'variant-1' })
                     setMessages(cloneMessages)
 
                 }).catch((err) => {
@@ -159,7 +159,7 @@ export default function TranslateScreen() {
                         const translatedText = response.choices[0].message.content
 
                         const cloneMessages = messages.slice()
-                        cloneMessages.push({ role: 'Translated to French', content: translatedText || `TRANSLATION ERROR | ORIGINAL PROMPT: Translate the following prompt to French: ${newText}` })
+                        cloneMessages.push({ role: 'Translated to French', content: translatedText || `TRANSLATION ERROR | ORIGINAL PROMPT: Translate the following prompt to French: ${newText}`, variant: 'variant-2' })
                         setMessages(cloneMessages)
 
                     }).catch((error) => {
@@ -214,23 +214,19 @@ export default function TranslateScreen() {
                 currentBot={currentBot}
                 isTranslatorView
             />
-            {/* {currentBot ? ( */}
             <Chat
                 translateMessages={messages}
-                title={"Enora Alpha v0.0.1"}
-                // onGenerateResponse={addMessageToThread}
+                title={"Translator"}
                 inputText={inputText}
-                // onTextChange={handleInputChange}
-                // onRead={() => handleReadLastMessage(messages)}
                 isHovering={isNotHoveringChat}
                 setIsHovering={setIsNotHoveringChat}
-                // onCreateNewThread={createThread}
                 onTranslateFirstToSecond={handleTranslateFirstToSecond}
                 onTranslateSecondToFirst={handleTranslateSecondToFirst}
+                isRecordingFirstToSecond={isRecordingFirstToSecond}
+                isRecordingSecondToFirst={isRecordingSecondToFirst}
                 currentBot={currentBot}
                 isTranslatorView
             />
-            {/* ) : <div />} */}
 
             <SettingsModal />
 

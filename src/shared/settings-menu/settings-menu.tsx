@@ -48,9 +48,9 @@ export function SettingsMenu({
 
     const renderReturnHomeButton = useCallback(() => {
         return (
-            <Fragment key={`bots-list-bot-create-bot`}>
-                <Link className={`glow-component ${styles['bot']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} href='/'>
-                    <Image className={styles['bot-image']} priority alt={`bots-list-bot-create-bot-image`} src={Icons.ReturnHomeIcon} />
+            <Fragment key={`bots-list-bot-translate-screen`}>
+                <Link className={`glow-component ${styles['bot']}`} href='/'>
+                    <Image className={styles['bot-image']} priority alt={`bots-list-bot-translate-screen-image`} src={Icons.ReturnHomeIcon} />
 
                     <div className={styles['bot-name']}>{"Return to Chat"}</div>
                 </Link>
@@ -61,7 +61,7 @@ export function SettingsMenu({
     const renderTranslatorBotButton = useCallback(() => {
         return (
             <Fragment key={`bots-list-bot-create-bot`}>
-                <Link className={`glow-component ${styles['bot']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} href='/translate'>
+                <Link className={`glow-component ${styles['bot']}`} href='/translate'>
                     <Image className={styles['bot-image']} priority alt={`bots-list-bot-create-bot-image`} src={Icons.TranslatorIcon} />
 
                     <div className={styles['bot-name']}>{"Translator"}</div>
@@ -73,7 +73,7 @@ export function SettingsMenu({
     const renderOpenSettingsButton = useCallback(() => {
         return (
             <Fragment key={`bots-list-bot-open-settings`}>
-                <a className={`glow-component ${styles['bot']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} onClick={() => setIsSettingsModalOpen(true)}>
+                <a className={`glow-component ${styles['bot']}`} onClick={() => setIsSettingsModalOpen(true)}>
                     <Image className={styles['bot-image']} priority alt={`bots-list-bot-open-settings-image`} src={Icons.SettingsIcon} />
                     <div className={styles['bot-name']}>{"Settings"}</div>
                 </a>
@@ -84,7 +84,7 @@ export function SettingsMenu({
     const renderCreateBotButton = useCallback(() => {
         return (
             <Fragment key={`bots-list-bot-create-bot`}>
-                <a className={`glow-component ${styles['bot']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} href='https://platform.openai.com/assistants' target='_black'>
+                <a className={`glow-component ${styles['bot']}`} href='https://platform.openai.com/assistants' target='_black'>
                     <Image className={styles['bot-image']} priority alt={`bots-list-bot-create-bot-image`} src={Icons.AddBotIcon} />
 
                     <div className={styles['bot-name']}>{"Manage Bots"}</div>
@@ -96,7 +96,7 @@ export function SettingsMenu({
     const renderBots = useMemo(() => {
         return bots?.map((bot, index) => (
             <Fragment key={`bots-list-bot-${bot.id}`}>
-                <button className={`glow-component ${styles['bot']} ${currentBot?.id === bot.id ? styles['glow-bot'] : ''}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} onClick={() => onSelectedBot ? onSelectedBot(bot) : () => null}>
+                <button className={`glow-component ${styles['bot']} ${currentBot?.id === bot.id ? styles['glow-bot'] : ''}`} onClick={() => onSelectedBot ? onSelectedBot(bot) : () => null}>
                     <Image className={styles['bot-image']} priority alt={`bots-list-bot-${bot.name}-${index}`} src={Icons.Bot1} />
 
                     <div className={styles['bot-name']}>{bot.name}</div>
@@ -108,7 +108,15 @@ export function SettingsMenu({
     }, [bots, currentBot])
 
     return (
-        <div className={`${styles['settings-menu']} ${isOpen ? '' : styles['settings-menu-closed']}`} onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
+        <div
+            className={`${styles['settings-menu']} ${isOpen ? '' : styles['settings-menu-closed']}`}
+            onMouseEnter={() => {
+                onHover()
+                setIsOpen(true)
+            }} onMouseLeave={() => {
+                onHoverEnded()
+                setIsOpen(false)
+            }}>
             <button onClick={onToggleOpenCloseMenu} className={styles['open-button-container']} >
                 <Image className={`${styles['open-button']} ${isOpen ? styles['open-button--open'] : ''} ${currentBot || isTranslatorView ? '' : styles['open-button--hidden']}`} priority alt={`open-button`} src={Icons.ChevronUp} />
 
