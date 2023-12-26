@@ -6,6 +6,7 @@ import styles from './settings-menu.module.css'
 import OpenAI from 'openai';
 import Image from 'next/image';
 import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
+import Link from 'next/link';
 
 interface SettingsMenuProps {
     isOpen: boolean;
@@ -13,8 +14,9 @@ interface SettingsMenuProps {
     bots?: OpenAI.Beta.Assistants.Assistant[];
     isHovering: boolean;
     setIsHovering: (anythingButChat: boolean) => void;
-    onSelectedBot: (bot: OpenAI.Beta.Assistants.Assistant) => void;
+    onSelectedBot?: (bot: OpenAI.Beta.Assistants.Assistant) => void;
     currentBot?: OpenAI.Beta.Assistants.Assistant;
+    isTranslatorView?: boolean;
 }
 
 export function SettingsMenu({
@@ -24,7 +26,8 @@ export function SettingsMenu({
     isHovering,
     setIsHovering,
     onSelectedBot,
-    currentBot
+    currentBot,
+    isTranslatorView,
 }: SettingsMenuProps) {
     const {
         setIsSettingsModalOpen
@@ -42,6 +45,30 @@ export function SettingsMenu({
     const onHoverEnded = () => {
         setIsHovering(false)
     }
+
+    const renderReturnHomeButton = useCallback(() => {
+        return (
+            <Fragment key={`bots-list-bot-create-bot`}>
+                <Link className={`glow-component ${styles['bot']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} href='/'>
+                    <Image className={styles['bot-image']} priority alt={`bots-list-bot-create-bot-image`} src={Icons.ReturnHomeIcon} />
+
+                    <div className={styles['bot-name']}>{"Return to Chat"}</div>
+                </Link>
+            </Fragment>
+        )
+    }, [])
+
+    const renderTranslatorBotButton = useCallback(() => {
+        return (
+            <Fragment key={`bots-list-bot-create-bot`}>
+                <Link className={`glow-component ${styles['bot']}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} href='/translate'>
+                    <Image className={styles['bot-image']} priority alt={`bots-list-bot-create-bot-image`} src={Icons.TranslatorIcon} />
+
+                    <div className={styles['bot-name']}>{"Translator"}</div>
+                </Link>
+            </Fragment>
+        )
+    }, [])
 
     const renderOpenSettingsButton = useCallback(() => {
         return (
@@ -69,7 +96,7 @@ export function SettingsMenu({
     const renderBots = useMemo(() => {
         return bots?.map((bot, index) => (
             <Fragment key={`bots-list-bot-${bot.id}`}>
-                <button className={`glow-component ${styles['bot']} ${currentBot?.id === bot.id ? styles['glow-bot'] : ''}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} onClick={() => onSelectedBot(bot)}>
+                <button className={`glow-component ${styles['bot']} ${currentBot?.id === bot.id ? styles['glow-bot'] : ''}`} onMouseEnter={onHover} onMouseLeave={onHoverEnded} onClick={() => onSelectedBot ? onSelectedBot(bot) : () => null}>
                     <Image className={styles['bot-image']} priority alt={`bots-list-bot-${bot.name}-${index}`} src={Icons.Bot1} />
 
                     <div className={styles['bot-name']}>{bot.name}</div>
@@ -83,14 +110,15 @@ export function SettingsMenu({
     return (
         <div className={`${styles['settings-menu']} ${isOpen ? '' : styles['settings-menu-closed']}`} onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
             <button onClick={onToggleOpenCloseMenu} className={styles['open-button-container']} >
-                <Image className={`${styles['open-button']} ${isOpen ? styles['open-button--open'] : ''} ${currentBot ? '' : styles['open-button--hidden']}`} priority alt={`open-button`} src={Icons.ChevronUp} />
+                <Image className={`${styles['open-button']} ${isOpen ? styles['open-button--open'] : ''} ${currentBot || isTranslatorView ? '' : styles['open-button--hidden']}`} priority alt={`open-button`} src={Icons.ChevronUp} />
 
             </button>
 
             <div className={styles['bots-list']}>
                 {renderOpenSettingsButton()}
                 {renderCreateBotButton()}
-                {renderBots}
+                {isTranslatorView ? renderReturnHomeButton() : renderTranslatorBotButton()}
+                {isTranslatorView ? null : renderBots}
             </div>
         </div>
     )

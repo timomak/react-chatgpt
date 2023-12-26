@@ -2,10 +2,10 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import OpenAI from "openai";
-import { Chat, TranslateChatMessagesProps } from '@/shared/chat/translate-chat';
+import { Chat, TranslateChatMessagesProps } from '@/shared/chat/chat';
 import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
 import { PageWrapper } from '@/shared/page-wrapper/page-wrapper';
-import { SettingsMenu } from '@/shared/settings-menu/translate-settings-menu';
+import { SettingsMenu } from '@/shared/settings-menu/settings-menu';
 import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
 import { SettingsModal } from '@/shared/settings-modal/settings-modal';
 import MicRecorder from 'mic-recorder-to-mp3';
@@ -212,6 +212,7 @@ export default function TranslateScreen() {
                 setIsHovering={setIsNotHoveringChat}
                 // onSelectedBot={() => null}
                 currentBot={currentBot}
+                isTranslatorView
             />
             {/* {currentBot ? ( */}
             <Chat

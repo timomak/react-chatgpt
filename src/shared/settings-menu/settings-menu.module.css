@@ -34,14 +34,16 @@
 .bots-list {
     height: 130px;
     border-radius: 8px;
-    display: flex;
-    gap: calc(var(--general-spacing) * 1.5);
+    display: grid;
     padding-top: var(--general-spacing);
-
+    overflow: visible;
+    display: grid;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    grid-column-gap: calc(var(--general-spacing) * 2);
 }
 
 .bot {
-    width: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -49,6 +51,7 @@
     align-items: center;
     padding: var(--general-spacing) 0;
     user-select: none;
+    overflow: visible;
 }
 
 .glow-bot::after {
