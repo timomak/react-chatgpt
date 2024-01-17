@@ -2,8 +2,8 @@ import { useChatSettings } from '@/providers/chat-settings-provider/chat-setting
 import styles from './settings-modal.module.css'
 import OpenAI from 'openai';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { TextInput } from '../text-input/text-input';
-import { BotItem } from '../bot-item/bot-item';
+import { TextInput } from '../../shared/text-input/text-input';
+import { BotItem } from '../../shared/bot-item/bot-item';
 
 
 interface SettingsModalProps {

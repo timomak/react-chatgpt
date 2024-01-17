@@ -5,9 +5,9 @@ import OpenAI from "openai";
 import { Chat } from '@/shared/chat/chat';
 import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
 import { PageWrapper } from '@/shared/page-wrapper/page-wrapper';
-import { SettingsMenu } from '@/shared/settings-menu/settings-menu';
+import { SettingsMenu } from '@/components/settings-menu/settings-menu';
 import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
-import { SettingsModal } from '@/shared/settings-modal/settings-modal';
+import { SettingsModal } from '@/components/settings-modal/settings-modal';
 
 export default function HomeScreen() {
     const [isNotHoveringChat, setIsNotHoveringChat] = useState(false);

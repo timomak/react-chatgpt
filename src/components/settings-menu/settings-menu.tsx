@@ -1,7 +1,7 @@
 'use client'
 
 import { Fragment, useCallback, useMemo } from 'react';
-import Icons from '../icons/icons';
+import Icons from '../../shared/icons/icons';
 import styles from './settings-menu.module.css'
 import OpenAI from 'openai';
 import Image from 'next/image';

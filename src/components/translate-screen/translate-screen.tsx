@@ -5,9 +5,9 @@ import OpenAI from "openai";
 import { Chat, TranslateChatMessagesProps } from '@/shared/chat/chat';
 import { ChatCompletionMessageParam } from 'openai/resources/index.mjs';
 import { PageWrapper } from '@/shared/page-wrapper/page-wrapper';
-import { SettingsMenu } from '@/shared/settings-menu/settings-menu';
+import { SettingsMenu } from '@/components/settings-menu/settings-menu';
 import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
-import { SettingsModal } from '@/shared/settings-modal/settings-modal';
+import { SettingsModal } from '@/components/settings-modal/settings-modal';
 import MicRecorder from 'mic-recorder-to-mp3';
 
 const recorder = new MicRecorder({ bitRate: 128 });
@@ -197,7 +197,7 @@ export default function TranslateScreen() {
             }).catch((e) => {
                 console.error(e);
             });
-            // Every 0.25 seconds it should translate / transcribe
+            // TODO: Every 0.25 seconds it should translate / transcribe
 
         }
     }, [isRecordingFirstToSecond, stopTranslateFirstToSecond, isRecordingSecondToFirst])
