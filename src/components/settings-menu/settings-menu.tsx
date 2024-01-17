@@ -9,26 +9,26 @@ import { useChatSettings } from '@/providers/chat-settings-provider/chat-setting
 import Link from 'next/link';
 
 interface SettingsMenuProps {
-    isOpen: boolean;
-    setIsOpen: (isOpen: boolean) => void;
-    bots?: OpenAI.Beta.Assistants.Assistant[];
     isHovering: boolean;
     setIsHovering: (anythingButChat: boolean) => void;
     onSelectedBot?: (bot: OpenAI.Beta.Assistants.Assistant) => void;
-    currentBot?: OpenAI.Beta.Assistants.Assistant;
     isTranslatorView?: boolean;
 }
 
 export function SettingsMenu({
-    isOpen,
-    setIsOpen,
-    bots,
-    isHovering,
     setIsHovering,
     onSelectedBot,
-    currentBot,
     isTranslatorView,
 }: SettingsMenuProps) {
+
+    const {
+        currentBot,
+        bots,
+        setIsMainChatModalVisible,
+        isSettingsMenuOpen: isOpen,
+        setIsSettingsMenuOpen: setIsOpen,
+    } = useChatSettings();
+
     const {
         setIsSettingsModalOpen
     } = useChatSettings();
@@ -60,9 +60,9 @@ export function SettingsMenu({
 
     const renderTranslatorBotButton = useCallback(() => {
         return (
-            <Fragment key={`bots-list-bot-create-bot`}>
+            <Fragment key={`bots-list-bot-translator-bot`}>
                 <Link className={`glow-component ${styles['bot']}`} href='/translate'>
-                    <Image className={styles['bot-image']} priority alt={`bots-list-bot-create-bot-image`} src={Icons.TranslatorIcon} />
+                    <Image className={styles['bot-image']} priority alt={`bots-list-bot-translator-bot-image`} src={Icons.TranslatorIcon} />
 
                     <div className={styles['bot-name']}>{"Translator"}</div>
                 </Link>
@@ -83,15 +83,14 @@ export function SettingsMenu({
 
     const renderCreateBotButton = useCallback(() => {
         return (
-            <Fragment key={`bots-list-bot-create-bot`}>
-                <a className={`glow-component ${styles['bot']}`} href='https://platform.openai.com/assistants' target='_black'>
-                    <Image className={styles['bot-image']} priority alt={`bots-list-bot-create-bot-image`} src={Icons.AddBotIcon} />
-
-                    <div className={styles['bot-name']}>{"Manage Bots"}</div>
-                </a>
+            <Fragment key={`bots-list-bot-manage-bot`}>
+                <button className={`glow-component ${styles['bot']}`} onClick={() => setIsMainChatModalVisible(true)}>
+                    <Image className={styles['bot-image']} priority alt={`bots-list-bot-manage-bot-image`} src={Icons.Bot1} />
+                    <div className={styles['bot-name']}>{"Main Chat"}</div>
+                </button>
             </Fragment>
         )
-    }, [])
+    }, [setIsMainChatModalVisible])
 
     const renderBots = useMemo(() => {
         return bots?.map((bot, index) => (
@@ -111,11 +110,11 @@ export function SettingsMenu({
         <div
             className={`${styles['settings-menu']} ${isOpen ? '' : styles['settings-menu-closed']}`}
             onMouseEnter={() => {
-                onHover()
-                setIsOpen(true)
+                onHover();
+                setIsOpen(true);
             }} onMouseLeave={() => {
-                onHoverEnded()
-                setIsOpen(false)
+                onHoverEnded();
+                setIsOpen(false);
             }}>
             <button onClick={onToggleOpenCloseMenu} className={styles['open-button-container']} >
                 <Image className={`${styles['open-button']} ${isOpen ? styles['open-button--open'] : ''} ${currentBot || isTranslatorView ? '' : styles['open-button--hidden']}`} priority alt={`open-button`} src={Icons.ChevronUp} />
@@ -123,9 +122,12 @@ export function SettingsMenu({
             </button>
 
             <div className={styles['bots-list']}>
-                {renderOpenSettingsButton()}
                 {renderCreateBotButton()}
                 {isTranslatorView ? renderReturnHomeButton() : renderTranslatorBotButton()}
+
+                {renderOpenSettingsButton()}
+                {/* {isTranslatorView ? renderReturnHomeButton() : renderTranslatorBotButton()} */}
+
                 {isTranslatorView ? null : renderBots}
             </div>
         </div>

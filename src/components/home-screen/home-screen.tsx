@@ -8,6 +8,7 @@ import { PageWrapper } from '@/shared/page-wrapper/page-wrapper';
 import { SettingsMenu } from '@/components/settings-menu/settings-menu';
 import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
 import { SettingsModal } from '@/components/settings-modal/settings-modal';
+import { MainAIChat } from '@/components/main-ai-chat/main-ai-chat';
 
 export default function HomeScreen() {
     const [isNotHoveringChat, setIsNotHoveringChat] = useState(false);
@@ -133,13 +134,9 @@ export default function HomeScreen() {
     return (
         <PageWrapper>
             <SettingsMenu
-                isOpen={isSettingsMenuOpen}
-                setIsOpen={setIsSettingsMenuOpen}
-                bots={bots}
                 isHovering={isNotHoveringChat}
                 setIsHovering={setIsNotHoveringChat}
                 onSelectedBot={handleBotSelected}
-                currentBot={currentBot}
             />
             {currentBot ? (
                 <Chat
@@ -157,6 +154,7 @@ export default function HomeScreen() {
             ) : <div />}
 
             <SettingsModal />
+            <MainAIChat />
         </PageWrapper>
     );
 }

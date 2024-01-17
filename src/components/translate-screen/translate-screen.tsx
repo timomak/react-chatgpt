@@ -9,6 +9,7 @@ import { SettingsMenu } from '@/components/settings-menu/settings-menu';
 import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
 import { SettingsModal } from '@/components/settings-modal/settings-modal';
 import MicRecorder from 'mic-recorder-to-mp3';
+import { MainAIChat } from '../main-ai-chat/main-ai-chat';
 
 const recorder = new MicRecorder({ bitRate: 128 });
 
@@ -32,25 +33,13 @@ export default function TranslateScreen() {
     let musicRef = React.useRef(null);
     let intervalRef = React.useRef(null);
 
-    React.useEffect(() => {
-        navigator.mediaDevices.getUserMedia(
-            { audio: true },
-        ).then(() => {
-            console.log('Permission Granted');
-            // setState((prevState) => { ...prevState, isBlocked: false });
-        }).catch(() => {
-            console.log('Permission Denied');
-            // setState({ isBlocked: true });
-        })
-
-    }, []);
-
     const {
         bots,
         setBots,
         openAI_apiKey,
         isSettingsMenuOpen,
         setIsSettingsMenuOpen,
+        setIsMainChatModalVisible,
         currentBot,
         setCurrentBot,
         currentThreadId,
@@ -202,16 +191,31 @@ export default function TranslateScreen() {
         }
     }, [isRecordingFirstToSecond, stopTranslateFirstToSecond, isRecordingSecondToFirst])
 
+    useEffect(() => {
+        setIsSettingsMenuOpen(false);
+        setIsMainChatModalVisible(false);
+    }, [])
+
+    useEffect(() => {
+        navigator.mediaDevices.getUserMedia(
+            { audio: true },
+        ).then(() => {
+            console.log('Permission Granted');
+            // setState((prevState) => { ...prevState, isBlocked: false });
+        }).catch(() => {
+            console.log('Permission Denied');
+            // setState({ isBlocked: true });
+        })
+
+    }, []);
+
+
+
     return (
         <PageWrapper>
             <SettingsMenu
-                isOpen={isSettingsMenuOpen}
-                setIsOpen={setIsSettingsMenuOpen}
-                bots={bots}
                 isHovering={isNotHoveringChat}
                 setIsHovering={setIsNotHoveringChat}
-                // onSelectedBot={() => null}
-                currentBot={currentBot}
                 isTranslatorView
             />
             <Chat
@@ -229,7 +233,7 @@ export default function TranslateScreen() {
             />
 
             <SettingsModal />
-
+            <MainAIChat />
         </PageWrapper>
     );
 }

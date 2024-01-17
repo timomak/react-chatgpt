@@ -1,7 +1,7 @@
 import { useChatSettings } from '@/providers/chat-settings-provider/chat-settings-provider';
 import styles from './settings-modal.module.css'
 import OpenAI from 'openai';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { TextInput } from '../../shared/text-input/text-input';
 import { BotItem } from '../../shared/bot-item/bot-item';
 
@@ -38,13 +38,13 @@ export function SettingsModal({ }: SettingsModalProps) {
 
     const botsTab = useMemo(() => {
         return (
-            <div className={`${styles['tab-page-container']}`}>
+            <div className={`${styles['tab-page-container']}`} key={'settings-modal--bots-tab'}>
                 <div>
-                    {/* <div className={`${styles['section-title']}`}>Default Bots</div> */}
-
                     <div className={`${styles['section-title']}`}>All Bots</div>
                     {bots?.map((bot) => (
-                        <BotItem bot={bot} onDelete={handleDeleteAssistant} />
+                        <Fragment key={`settings-modal--bots-tab--${bot.id}`}>
+                            <BotItem bot={bot} onDelete={handleDeleteAssistant} />
+                        </Fragment>
                     ))}
                 </div>
             </div>
@@ -53,7 +53,7 @@ export function SettingsModal({ }: SettingsModalProps) {
 
     const generalTab = useMemo(() => {
         return (
-            <div className={`${styles['tab-page-container']}`}>
+            <div className={`${styles['tab-page-container']}`} key={'settings-modal--general-tab'}>
                 <TextInput
                     title='Username'
                     value={chatUsername}
@@ -80,7 +80,7 @@ export function SettingsModal({ }: SettingsModalProps) {
 
     const advancedTab = useMemo(() => {
         return (
-            <div className={`${styles['tab-page-container']}`}>
+            <div className={`${styles['tab-page-container']}`} key={'settings-modal--advanced-tab'}>
                 <TextInput
                     title='Message Thread ID'
                     value={newThreadId}
@@ -118,11 +118,10 @@ export function SettingsModal({ }: SettingsModalProps) {
             <div className={`${styles['tabs']}`}>
                 <div className={`${styles['tabs-buttons']}`}>
                     {tabsData.map((tabData, index) => (
-                        <button type='button' onClick={() => setCurrentTabIndex(index)} className={`${styles['tab-button']} ${index === currentTabIndex ? styles['tab-button-current'] : ''}`}>{tabData.title}</button>
+                        <button key={`settings-modal--tab-button--${tabData.title}`} type='button' onClick={() => setCurrentTabIndex(index)} className={`${styles['tab-button']} ${index === currentTabIndex ? styles['tab-button-current'] : ''}`}>{tabData.title}</button>
                     ))}
                 </div>
                 {tabsData[currentTabIndex].component}
-
             </div>
         )
     }, [tabsData, currentTabIndex])

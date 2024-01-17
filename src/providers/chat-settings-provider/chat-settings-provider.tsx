@@ -14,6 +14,8 @@ export interface ChatSettingsContextProperties {
     setIsSettingsMenuOpen: (anonymous: boolean) => void;
     isSettingsModalOpen: boolean;
     setIsSettingsModalOpen: (anonymous: boolean) => void;
+    isMainChatModalVisible: boolean;
+    setIsMainChatModalVisible: (visible: boolean) => void;
     currentBot: OpenAI.Beta.Assistants.Assistant | undefined;
     setCurrentBot: (bot: OpenAI.Beta.Assistants.Assistant) => void;
     currentThreadId: string | undefined;
@@ -38,6 +40,7 @@ export function ChatSettingsProvider({ children }: ChatSettingsProviderProps) {
     // Chat UI Settings
     const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(true);
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+    const [isMainChatModalVisible, setIsMainChatModalVisible] = useState(true);
     const [currentBot, setCurrentBot] = useState<OpenAI.Beta.Assistants.Assistant>();
     const [currentThreadId, setCurrentThreadId] = useState(threadId);
     const [bots, setBots] = useState<OpenAI.Beta.Assistants.Assistant[] | undefined>([]);
@@ -55,6 +58,8 @@ export function ChatSettingsProvider({ children }: ChatSettingsProviderProps) {
             setIsSettingsMenuOpen,
             isSettingsModalOpen,
             setIsSettingsModalOpen,
+            isMainChatModalVisible,
+            setIsMainChatModalVisible,
             currentBot,
             setCurrentBot,
             currentThreadId,
@@ -69,6 +74,8 @@ export function ChatSettingsProvider({ children }: ChatSettingsProviderProps) {
             setIsSettingsMenuOpen,
             isSettingsModalOpen,
             setIsSettingsMenuOpen,
+            isMainChatModalVisible,
+            setIsMainChatModalVisible,
             currentBot,
             setCurrentBot,
             currentThreadId,
