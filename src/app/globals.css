@@ -12,6 +12,9 @@
   --window-spacing: 32px;
   --settings-menu-close: 40px;
   --settings-menu-open: 140px;
+  --mobile: 767px;
+  --tablet: 1023px;
+  --desktop: 1919px;
 }
 
 @media (prefers-color-scheme: dark) {

@@ -217,6 +217,7 @@ export default function TranslateScreen() {
                 isHovering={isNotHoveringChat}
                 setIsHovering={setIsNotHoveringChat}
                 isTranslatorView
+                hasReturnHomeButton
             />
             <Chat
                 translateMessages={messages}

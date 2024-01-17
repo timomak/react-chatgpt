@@ -13,12 +13,16 @@ interface SettingsMenuProps {
     setIsHovering: (anythingButChat: boolean) => void;
     onSelectedBot?: (bot: OpenAI.Beta.Assistants.Assistant) => void;
     isTranslatorView?: boolean;
+    hasReturnHomeButton?: boolean;
+    isHomeView?: boolean;
 }
 
 export function SettingsMenu({
     setIsHovering,
     onSelectedBot,
     isTranslatorView,
+    hasReturnHomeButton = false,
+    isHomeView = false,
 }: SettingsMenuProps) {
 
     const {
@@ -52,7 +56,7 @@ export function SettingsMenu({
                 <Link className={`glow-component ${styles['bot']}`} href='/'>
                     <Image className={styles['bot-image']} priority alt={`bots-list-bot-translate-screen-image`} src={Icons.ReturnHomeIcon} />
 
-                    <div className={styles['bot-name']}>{"Return to Chat"}</div>
+                    <div className={styles['bot-name']}>{"Home"}</div>
                 </Link>
             </Fragment>
         )
@@ -121,14 +125,13 @@ export function SettingsMenu({
 
             </button>
 
-            <div className={styles['bots-list']}>
+            <div className={`${isHomeView ? styles['bots-list-home-view'] : styles['bots-list']}`}>
                 {renderCreateBotButton()}
-                {isTranslatorView ? renderReturnHomeButton() : renderTranslatorBotButton()}
+                {hasReturnHomeButton ? renderReturnHomeButton() : null}
 
                 {renderOpenSettingsButton()}
-                {/* {isTranslatorView ? renderReturnHomeButton() : renderTranslatorBotButton()} */}
-
-                {isTranslatorView ? null : renderBots}
+                {isTranslatorView ? null : renderTranslatorBotButton()}
+                {isHomeView ? renderBots : null}
             </div>
         </div>
     )

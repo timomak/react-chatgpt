@@ -137,6 +137,7 @@ export default function HomeScreen() {
                 isHovering={isNotHoveringChat}
                 setIsHovering={setIsNotHoveringChat}
                 onSelectedBot={handleBotSelected}
+                isHomeView
             />
             {currentBot ? (
                 <Chat
