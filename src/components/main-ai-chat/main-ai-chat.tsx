@@ -7,11 +7,12 @@ import { BotItem } from '../../shared/bot-item/bot-item';
 import { InputMessage } from '@/shared/input-message/input-message';
 import { MessageWindow } from '@/shared/messages-window/messages-window';
 import { MessageViewProps } from '@/shared/message-view/message-view';
-
-
+import MicRecorder from 'mic-recorder-to-mp3';
 interface MainAIChatProps {
 
 }
+
+const recorder = new MicRecorder({ bitRate: 128 });
 
 export function MainAIChat({ }: MainAIChatProps) {
     const {
@@ -24,152 +25,154 @@ export function MainAIChat({ }: MainAIChatProps) {
         isMainChatModalVisible,
         setIsMainChatModalVisible,
         currentThreadId,
+        currentBot,
+        setCurrentBot,
         setCurrentThreadId,
 
     } = useChatSettings();
-
-    const [currentTabIndex, setCurrentTabIndex] = useState(0);
-    const [apiKey, setApiKey] = useState(openAI_apiKey);
-    const [newThreadId, setNewThreadId] = useState(currentThreadId);
-
     const openai = new OpenAI({ apiKey: openAI_apiKey, dangerouslyAllowBrowser: true });
 
     const [isRecording, setIsRecording] = useState(false)
 
+    const [allMessages, setAllMessages] = useState<MessageViewProps[]>([
+        {
+            variant: 'loading-response',
+            text: 'Hello, how can I help you today?'
+        }
+    ]);
+
+    // MARK: Threads Logic
+    // --------------------------------------
+
+    const retrieveThreadMessages = useCallback(async (threadId: string, readLastMessage?: boolean) => {
+        const threadMessages = await openai.beta.threads.messages.list(threadId);
+
+        console.log("fetching new messages: ", threadMessages)
+        if (threadMessages.data.length > 0) {
+            const tempMessages: MessageViewProps[] = []
+
+            threadMessages.data.forEach((messageInData) => {
+                const newMessage: MessageViewProps = { 'variant': messageInData.role === 'assistant' ? 'bot-text' : 'user-text', text: (messageInData.content[0] as any).text.value }
+                tempMessages.push(newMessage)
+            })
+            setAllMessages(tempMessages.reverse())
+        } else {
+            const newMessage: MessageViewProps = { variant: 'bot-text', text: 'Hello, how can I help you today?' }
+
+            setAllMessages([newMessage])
+        }
+    }, [currentBot]);
+
+    const handleThreadRunStatus = async (threadId: string, run: OpenAI.Beta.Threads.Runs.Run) => {
+        let isComplete = false
+        while (isComplete === false) {
+            const threadMessages = await openai.beta.threads.runs.retrieve(threadId, run.id)
+            if (threadMessages.status === 'completed') isComplete = true
+        }
+
+        retrieveThreadMessages(threadId, true)
+    };
+
+    const handleRunThread = useCallback(async (threadId: string) => {
+        const runResponse = await openai.beta.threads.runs.create(threadId, {
+            assistant_id: currentBot?.id || '',
+        })
+        handleThreadRunStatus(threadId, runResponse)
+
+    }, [currentBot])
+
+    const addMessageToThread = useCallback(async (newPromptInput: string) => {
+        if (currentThreadId) {
+            const addNewMessage = allMessages.slice();
+            addNewMessage.push({ variant: 'loading-response', text: newPromptInput })
+            setAllMessages(addNewMessage)
+
+            const threadMessages = await openai.beta.threads.messages.create(currentThreadId, {
+                role: 'user',
+                content: newPromptInput
+            });
+            console.log("running thread:", currentThreadId);
+
+            handleRunThread(currentThreadId)
+        }
+    }, [currentThreadId, handleRunThread, allMessages, setAllMessages, openai])
+
+    const createThread = async () => {
+        const newThread = await openai.beta.threads.create();
+        setCurrentThreadId(newThread.id)
+    };
+
+    // MARK: Recording Logic
+    // --------------------------------------
+    const handleStartRecording = useCallback(() => {
+        // START RECORDING
+        recorder.start().then(() => {
+            const cloneMessages = allMessages.slice();
+
+            // Add new message from voice to chat.
+            cloneMessages.push({ text: '', variant: 'loading-question' })
+            setAllMessages(cloneMessages)
+        }).catch((e) => {
+            console.error(e);
+        });
+    }, [allMessages, setAllMessages]);
+
+    const handleStopRecording = useCallback(async () => {
+        recorder
+            .stop()
+            .getMp3().then((props) => {
+                const [buffer, blob] = props
+                console.log('stopped', props)
+                // do what ever you want with buffer and blob
+                // Example: Create a mp3 file and play
+                const file = new File(buffer, 'me-at-thevoice.mp3', {
+                    type: blob.type,
+                    lastModified: Date.now()
+                });
+
+                openai.audio.transcriptions.create({
+                    file,
+                    model: 'whisper-1',
+                    // prompt: 'Detect Any language and transcribe the translation to English.'
+                }).then((res) => {
+                    console.log('whisper response', res)
+                    const newText = res.text
+                    const cloneMessages = allMessages.slice()
+                    // MARK: Remove loading animation on chat
+                    const lastMessage = cloneMessages[cloneMessages.length - 1];
+                    if (lastMessage?.variant === 'loading-question') {
+                        cloneMessages.pop()
+                    }
+
+                    // Add new message from voice to chat.
+                    cloneMessages.push({ text: newText, variant: 'user-text' })
+                    setAllMessages(cloneMessages)
+                    console.log("adding new message now: ", newText)
+                    addMessageToThread(newText);
+                }).catch((err) => {
+                    console.log('whisper error', err)
+
+                })
+            }).catch((e) => {
+                alert('We could not retrieve your message');
+                console.log(e);
+            });
+    }, [recorder, openai, setAllMessages, allMessages, addMessageToThread]);
+
     const handleToggleIsRecording = () => {
+        if (isRecording) {
+            handleStopRecording();
+        } else {
+            handleStartRecording();
+        }
         setIsRecording((prevState) => !prevState)
     }
 
-    // const handleDeleteAssistant = async (botId: string) => {
-    //     await openai.beta.assistants.del(botId);
-    //     const allBots = bots?.filter((bot) => bot.id !== botId)
-    //     setBots(allBots || [])
-    // }
-
-    // const botsTab = useMemo(() => {
-    //     return (
-    //         <div className={`${styles['tab-page-container']}`}>
-    //             <div>
-    //                 {/* <div className={`${styles['section-title']}`}>Default Bots</div> */}
-
-    //                 <div className={`${styles['section-title']}`}>All Bots</div>
-    //                 {bots?.map((bot) => (
-    //                     <BotItem bot={bot} onDelete={handleDeleteAssistant} />
-    //                 ))}
-    //             </div>
-    //         </div>
-    //     )
-    // }, [bots, handleDeleteAssistant])
-
-    // const generalTab = useMemo(() => {
-    //     return (
-    //         <div className={`${styles['tab-page-container']}`}>
-    //             <TextInput
-    //                 title='Username'
-    //                 value={chatUsername}
-    //                 setValue={setChatUsername}
-    //                 placeholder='Enter Username'
-    //                 onSubmit={() => null}
-    //                 buttonText='Save'
-    //             />
-
-    //             <TextInput
-    //                 title='Open AI API Key'
-    //                 value={apiKey}
-    //                 setValue={setApiKey}
-    //                 placeholder='Enter Api key'
-    //                 onSubmit={() => apiKey ? setOpenAI_apiKey(apiKey) : null}
-    //                 onCancel={() => openAI_apiKey ? setApiKey(openAI_apiKey) : setApiKey('')}
-    //                 buttonText='Save'
-    //             />
-
-
-    //         </div>
-    //     )
-    // }, [apiKey, setApiKey, setOpenAI_apiKey, chatUsername, setChatUsername])
-
-    // const advancedTab = useMemo(() => {
-    //     return (
-    //         <div className={`${styles['tab-page-container']}`}>
-    //             <TextInput
-    //                 title='Message Thread ID'
-    //                 value={newThreadId}
-    //                 setValue={setNewThreadId}
-    //                 placeholder='Enter current thread ID...'
-    //                 onSubmit={() => newThreadId ? setCurrentThreadId(newThreadId) : null}
-    //                 onCancel={() => currentThreadId ? setNewThreadId(currentThreadId) : setCurrentThreadId('')}
-    //                 buttonText='Save'
-    //             />
-
-
-    //         </div>
-    //     )
-    // }, [setCurrentThreadId, currentThreadId, newThreadId, setNewThreadId])
-
-    // const tabsData = useMemo(() => {
-    //     return [
-    //         {
-    //             title: 'General',
-    //             component: generalTab
-    //         },
-    //         {
-    //             title: 'Bots',
-    //             component: botsTab
-    //         },
-    //         {
-    //             title: 'Advanced',
-    //             component: advancedTab
-    //         },
-    //     ]
-    // }, [generalTab, botsTab])
-
-    const horizontalTabs = useCallback(() => {
-        return (
-            <div className={`${styles['tabs']}`}>
-                {/* <div className={`${styles['tabs-buttons']}`}>
-                    {tabsData.map((tabData, index) => (
-                        <button type='button' onClick={() => setCurrentTabIndex(index)} className={`${styles['tab-button']} ${index === currentTabIndex ? styles['tab-button-current'] : ''}`}>{tabData.title}</button>
-                    ))}
-                </div>
-                {tabsData[currentTabIndex].component} */}
-            </div>
-        )
-    }, [currentTabIndex])
-
-    const getAllMessages = useCallback(() => {
-
-        let allMessages: MessageViewProps[] = []
-
-        allMessages = [
-            // {
-            //     variant: 'context-title',
-            //     text: "Start recording whenever you're ready. Stop recording to send message"
-            // },
-            {
-                variant: 'bot-text',
-                text: 'Hello, how can I help you today?'
-            },
-            {
-                variant: 'user-text',
-                text: 'Welcome user'
-            },
-            {
-                variant: 'loading-response',
-                text: 'Loading...'
-            },
-            {
-                variant: 'loading-question',
-                text: 'Loading...'
-            },
-        ]
-
-        return allMessages
-    }, [])
-
     useEffect(() => {
-        setNewThreadId(currentThreadId)
-    }, [currentThreadId])
+        if (currentBot && currentThreadId) retrieveThreadMessages(currentThreadId)
 
+        else if (currentBot && currentThreadId === undefined) createThread();
+    }, [currentBot, currentThreadId])
 
     return (
         <div >
@@ -180,7 +183,7 @@ export function MainAIChat({ }: MainAIChatProps) {
                     <div className={`${styles['close-button-container']}`}>
                         <button type='button' onClick={() => setIsMainChatModalVisible(false)} className={`${styles['close-button']}`}>+</button>
                     </div>
-                    <MessageWindow messages={getAllMessages()} />
+                    <MessageWindow messages={allMessages} />
                     <InputMessage isRecording={isRecording} onToggleIsRecording={handleToggleIsRecording} />
                 </div>
             </div>

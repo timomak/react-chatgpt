@@ -121,6 +121,11 @@ export default function HomeScreen() {
     const retrieveAllAssistants = async () => {
         const assistants = await openai.beta.assistants.list();
         setBots(assistants.data)
+
+        const swarmAI = assistants.data.find((assistant) => assistant.name?.toLocaleLowerCase().includes("swarm"))
+        if (swarmAI) {
+            setCurrentBot(swarmAI)
+        }
     }
 
     useEffect(() => {
@@ -139,7 +144,7 @@ export default function HomeScreen() {
                 onSelectedBot={handleBotSelected}
                 isHomeView
             />
-            {currentBot ? (
+            {/* {currentBot ? (
                 <Chat
                     messages={messages}
                     title={"Enora Alpha v0.0.1"}
@@ -152,7 +157,7 @@ export default function HomeScreen() {
                     onCreateNewThread={createThread}
                     currentBot={currentBot}
                 />
-            ) : <div />}
+            ) : <div />} */}
 
             <SettingsModal />
             <MainAIChat />

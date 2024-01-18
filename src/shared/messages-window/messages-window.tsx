@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { MessageView, MessageViewProps } from "../message-view/message-view"
 import styles from './messages-window.module.css'
 
@@ -10,9 +11,11 @@ export function MessageWindow({
 }: MessageWindowProps) {
     return (
         <div className={styles['container']}>
-            {messages?.map((current) => {
+            {messages?.map((current, index) => {
                 return (
-                    <MessageView variant={current.variant} text={current.text} />
+                    <Fragment key={`message-window-key-index-${index}`}>
+                        <MessageView variant={current.variant} text={current.text} />
+                    </Fragment>
                 )
             })}
         </div>
