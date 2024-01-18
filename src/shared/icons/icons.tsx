@@ -1,6 +1,7 @@
 import AddBotIcon from '../../assets/icons/new-bot.svg'
 import SendIcon from '../../assets/icons/send-icon.svg'
 import ChevronUp from '../../assets/icons/chevron-up.svg'
+import MicIcon from '../../assets/icons/mic-icon.svg'
 import SettingsIcon from '../../assets/icons/settings.svg'
 import TranslatorIcon from '../../assets/icons/translator.svg'
 import ReturnHomeIcon from '../../assets/icons/return-home.svg'
@@ -13,6 +14,7 @@ const Icons = {
     Bot2,
     SendIcon,
     ChevronUp,
+    MicIcon,
     SettingsIcon,
     TranslatorIcon,
     ReturnHomeIcon

@@ -4,6 +4,9 @@ import OpenAI from 'openai';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { TextInput } from '../../shared/text-input/text-input';
 import { BotItem } from '../../shared/bot-item/bot-item';
+import { InputMessage } from '@/shared/input-message/input-message';
+import { MessageWindow } from '@/shared/messages-window/messages-window';
+import { MessageViewProps } from '@/shared/message-view/message-view';
 
 
 interface MainAIChatProps {
@@ -30,6 +33,12 @@ export function MainAIChat({ }: MainAIChatProps) {
     const [newThreadId, setNewThreadId] = useState(currentThreadId);
 
     const openai = new OpenAI({ apiKey: openAI_apiKey, dangerouslyAllowBrowser: true });
+
+    const [isRecording, setIsRecording] = useState(false)
+
+    const handleToggleIsRecording = () => {
+        setIsRecording((prevState) => !prevState)
+    }
 
     // const handleDeleteAssistant = async (botId: string) => {
     //     await openai.beta.assistants.del(botId);
@@ -127,6 +136,36 @@ export function MainAIChat({ }: MainAIChatProps) {
         )
     }, [currentTabIndex])
 
+    const getAllMessages = useCallback(() => {
+
+        let allMessages: MessageViewProps[] = []
+
+        allMessages = [
+            // {
+            //     variant: 'context-title',
+            //     text: "Start recording whenever you're ready. Stop recording to send message"
+            // },
+            {
+                variant: 'bot-text',
+                text: 'Hello, how can I help you today?'
+            },
+            {
+                variant: 'user-text',
+                text: 'Welcome user'
+            },
+            {
+                variant: 'loading-response',
+                text: 'Loading...'
+            },
+            {
+                variant: 'loading-question',
+                text: 'Loading...'
+            },
+        ]
+
+        return allMessages
+    }, [])
+
     useEffect(() => {
         setNewThreadId(currentThreadId)
     }, [currentThreadId])
@@ -141,7 +180,8 @@ export function MainAIChat({ }: MainAIChatProps) {
                     <div className={`${styles['close-button-container']}`}>
                         <button type='button' onClick={() => setIsMainChatModalVisible(false)} className={`${styles['close-button']}`}>+</button>
                     </div>
-                    {/* {horizontalTabs()} */}
+                    <MessageWindow messages={getAllMessages()} />
+                    <InputMessage isRecording={isRecording} onToggleIsRecording={handleToggleIsRecording} />
                 </div>
             </div>
 
