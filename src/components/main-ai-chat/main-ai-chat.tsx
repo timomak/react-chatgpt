@@ -83,6 +83,15 @@ export function MainAIChat({ }: MainAIChatProps) {
     const addMessageToThread = useCallback(async (newPromptInput: string) => {
         if (currentThreadId) {
             const addNewMessage = allMessages.slice();
+
+            // MARK: Remove loading animation on chat
+            const lastMessage = addNewMessage[addNewMessage.length - 1];
+            if (lastMessage?.variant === 'loading-question') {
+                addNewMessage.pop()
+            }
+
+            // Add new message from voice to chat.
+            addNewMessage.push({ text: newPromptInput, variant: 'user-text' })
             addNewMessage.push({ variant: 'loading-response', text: newPromptInput })
             setAllMessages(addNewMessage)
 
@@ -90,7 +99,6 @@ export function MainAIChat({ }: MainAIChatProps) {
                 role: 'user',
                 content: newPromptInput
             });
-            console.log("running thread:", currentThreadId);
 
             handleRunThread(currentThreadId)
         }
@@ -121,7 +129,6 @@ export function MainAIChat({ }: MainAIChatProps) {
             .stop()
             .getMp3().then((props) => {
                 const [buffer, blob] = props
-                console.log('stopped', props)
                 // do what ever you want with buffer and blob
                 // Example: Create a mp3 file and play
                 const file = new File(buffer, 'me-at-thevoice.mp3', {
@@ -134,19 +141,8 @@ export function MainAIChat({ }: MainAIChatProps) {
                     model: 'whisper-1',
                     // prompt: 'Detect Any language and transcribe the translation to English.'
                 }).then((res) => {
-                    console.log('whisper response', res)
                     const newText = res.text
-                    const cloneMessages = allMessages.slice()
-                    // MARK: Remove loading animation on chat
-                    const lastMessage = cloneMessages[cloneMessages.length - 1];
-                    if (lastMessage?.variant === 'loading-question') {
-                        cloneMessages.pop()
-                    }
 
-                    // Add new message from voice to chat.
-                    cloneMessages.push({ text: newText, variant: 'user-text' })
-                    setAllMessages(cloneMessages)
-                    console.log("adding new message now: ", newText)
                     addMessageToThread(newText);
                 }).catch((err) => {
                     console.log('whisper error', err)

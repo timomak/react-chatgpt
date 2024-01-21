@@ -27,7 +27,7 @@ export function MessageWindow({
     }
 
     useEffect(() => {
-        scrollToBottom()
+        scrollToBottom();
     }, [messages, isMainChatModalVisible]);
 
     return (
