@@ -15,6 +15,7 @@ interface SettingsMenuProps {
     isTranslatorView?: boolean;
     hasReturnHomeButton?: boolean;
     isHomeView?: boolean;
+    hideTopChevronButton?: boolean;
 }
 
 export function SettingsMenu({
@@ -23,6 +24,7 @@ export function SettingsMenu({
     isTranslatorView,
     hasReturnHomeButton = false,
     isHomeView = false,
+    hideTopChevronButton = false,
 }: SettingsMenuProps) {
 
     const {
@@ -120,10 +122,11 @@ export function SettingsMenu({
                 onHoverEnded();
                 setIsOpen(false);
             }}>
-            <button onClick={onToggleOpenCloseMenu} className={styles['open-button-container']} >
-                <Image className={`${styles['open-button']} ${isOpen ? styles['open-button--open'] : ''} ${currentBot || isTranslatorView ? '' : styles['open-button--hidden']}`} priority alt={`open-button`} src={Icons.ChevronUp} />
-
-            </button>
+            {!hideTopChevronButton ? (
+                <button onClick={onToggleOpenCloseMenu} className={styles['open-button-container']} >
+                    <Image className={`${styles['open-button']} ${isOpen ? styles['open-button--open'] : ''} ${currentBot || isTranslatorView ? '' : styles['open-button--hidden']}`} priority alt={`open-button`} src={Icons.ChevronUp} />
+                </button>
+            ) : null}
 
             <div className={`${isHomeView ? styles['bots-list-home-view'] : styles['bots-list']}`}>
                 {renderCreateBotButton()}

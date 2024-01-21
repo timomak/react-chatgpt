@@ -20,6 +20,7 @@ export function SettingsModal({ }: SettingsModalProps) {
         setOpenAI_apiKey,
         isSettingsModalOpen,
         setIsSettingsModalOpen,
+        isMainChatModalVisible,
         currentThreadId,
         setCurrentThreadId,
     } = useChatSettings();
@@ -130,6 +131,7 @@ export function SettingsModal({ }: SettingsModalProps) {
         setNewThreadId(currentThreadId)
     }, [currentThreadId])
 
+    if (isMainChatModalVisible) return null;
 
     return (
         <div className={`${styles['settings-modal']} ${isSettingsModalOpen ? styles['settings-modal-open'] : ''}`} >

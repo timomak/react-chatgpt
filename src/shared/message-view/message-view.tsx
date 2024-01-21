@@ -9,9 +9,8 @@ export interface MessageViewProps {
 
 export function MessageView({
     variant = 'context-title',
-    text
+    text,
 }: MessageViewProps) {
-
     const messageContent = useCallback(() => {
         switch (variant) {
             case 'context-title':

@@ -15,6 +15,8 @@ interface MainAIChatProps {
 const recorder = new MicRecorder({ bitRate: 128 });
 
 export function MainAIChat({ }: MainAIChatProps) {
+    const default_message: MessageViewProps = { variant: 'bot-text', text: 'Hello, how can I help you today?' };
+
     const {
         bots,
         setBots,
@@ -37,7 +39,6 @@ export function MainAIChat({ }: MainAIChatProps) {
     const [allMessages, setAllMessages] = useState<MessageViewProps[]>([
         {
             variant: 'loading-response',
-            text: 'Hello, how can I help you today?'
         }
     ]);
 
@@ -47,7 +48,6 @@ export function MainAIChat({ }: MainAIChatProps) {
     const retrieveThreadMessages = useCallback(async (threadId: string, readLastMessage?: boolean) => {
         const threadMessages = await openai.beta.threads.messages.list(threadId);
 
-        console.log("fetching new messages: ", threadMessages)
         if (threadMessages.data.length > 0) {
             const tempMessages: MessageViewProps[] = []
 
@@ -55,11 +55,10 @@ export function MainAIChat({ }: MainAIChatProps) {
                 const newMessage: MessageViewProps = { 'variant': messageInData.role === 'assistant' ? 'bot-text' : 'user-text', text: (messageInData.content[0] as any).text.value }
                 tempMessages.push(newMessage)
             })
+            tempMessages.push(default_message)
             setAllMessages(tempMessages.reverse())
         } else {
-            const newMessage: MessageViewProps = { variant: 'bot-text', text: 'Hello, how can I help you today?' }
-
-            setAllMessages([newMessage])
+            setAllMessages([default_message])
         }
     }, [currentBot]);
 
@@ -166,13 +165,13 @@ export function MainAIChat({ }: MainAIChatProps) {
             handleStartRecording();
         }
         setIsRecording((prevState) => !prevState)
-    }
+    };
 
     useEffect(() => {
         if (currentBot && currentThreadId) retrieveThreadMessages(currentThreadId)
 
         else if (currentBot && currentThreadId === undefined) createThread();
-    }, [currentBot, currentThreadId])
+    }, [currentBot, currentThreadId]);
 
     return (
         <div >
