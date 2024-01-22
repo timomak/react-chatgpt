@@ -44,7 +44,7 @@
 
 .main-page {
   flex: 1;
-  color: black;
+  color: var(--main-bg-color);
   height: 100% !important;
   display: flex;
   flex-direction: column;
