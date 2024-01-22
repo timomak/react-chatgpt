@@ -1,0 +1,32 @@
+.navigation-ui-container {
+    height: 30px;
+    left: 0;
+    right: 0;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 var(--general-spacing);
+}
+
+.navigation-ui-left-button {
+    rotate: -90deg;
+}
+
+.close-button-container {
+    color: var(--gray-color);
+    font-size: 1.5rem;
+    justify-content: flex-end;
+    align-self: flex-start;
+}
+
+.close-button {
+    color: var(--gray-color);
+    font-size: 1.5rem;
+    transform: rotate(45deg);
+    user-select: none;
+    transition: color .3s;
+}
+
+.close-button:hover {
+    color: var(--white-color);
+}

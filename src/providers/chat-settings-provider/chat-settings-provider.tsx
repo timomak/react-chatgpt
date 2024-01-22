@@ -40,7 +40,7 @@ export function ChatSettingsProvider({ children }: ChatSettingsProviderProps) {
     // Chat UI Settings
     const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(true);
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-    const [isMainChatModalVisible, setIsMainChatModalVisible] = useState(false);
+    const [isMainChatModalVisible, setIsMainChatModalVisible] = useState(true);
     const [currentBot, setCurrentBot] = useState<OpenAI.Beta.Assistants.Assistant>();
     const [currentThreadId, setCurrentThreadId] = useState(threadId);
     const [bots, setBots] = useState<OpenAI.Beta.Assistants.Assistant[] | undefined>([]);

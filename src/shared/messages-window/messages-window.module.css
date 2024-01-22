@@ -3,7 +3,6 @@
     flex: 1;
     overflow-y: scroll;
     -webkit-mask-image: linear-gradient(to top, var(--main-bg-color) 97%, transparent 100%);
-
 }
 
 .lower-container {

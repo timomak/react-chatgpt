@@ -1,3 +1,7 @@
+.message-variant-default {
+    margin: 0 var(--general-spacing);
+}
+
 .message-variant-context-title {
     /* background-color: blue; */
     justify-content: center;

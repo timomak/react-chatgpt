@@ -31,7 +31,7 @@ export function MessageView({
     }, [variant, text])
 
     return (
-        <div className={styles[`message-variant-${variant}`]}>
+        <div className={`${styles["message-variant-default"]} ${styles[`message-variant-${variant}`]}`}>
             {messageContent()}
         </div>
     )

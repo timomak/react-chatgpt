@@ -8,6 +8,7 @@ import { InputMessage } from '@/shared/input-message/input-message';
 import { MessageWindow } from '@/shared/messages-window/messages-window';
 import { MessageViewProps } from '@/shared/message-view/message-view';
 import MicRecorder from 'mic-recorder-to-mp3';
+import { NavigationUI } from '@/shared/navigation-ui/navigation-ui';
 interface MainAIChatProps {
 
 }
@@ -175,9 +176,7 @@ export function MainAIChat({ }: MainAIChatProps) {
             <div className={`${styles['sliding-container']} ${isMainChatModalVisible ? styles['sliding-container-open'] : ''}`}>
                 <button type='button' onClick={() => setIsMainChatModalVisible(false)} className={`${styles['clickable-background']}`} />
                 <div className={`${styles['main-chat-content']}`}>
-                    <div className={`${styles['close-button-container']}`}>
-                        <button type='button' onClick={() => setIsMainChatModalVisible(false)} className={`${styles['close-button']}`}>+</button>
-                    </div>
+                    <NavigationUI leftActionElement={'back-button'} onLeftActionPressed={() => setIsMainChatModalVisible(false)} />
                     <MessageWindow messages={allMessages} />
                     <InputMessage isRecording={isRecording} onToggleIsRecording={handleToggleIsRecording} />
                 </div>

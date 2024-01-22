@@ -159,7 +159,6 @@ export default function HomeScreen() {
                     currentBot={currentBot}
                 />
             ) : <div />} */}
-
             <SettingsModal />
             <MainAIChat />
         </PageWrapper>
