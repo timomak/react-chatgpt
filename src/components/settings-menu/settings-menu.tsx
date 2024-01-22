@@ -134,7 +134,7 @@ export function SettingsMenu({
 
                 {renderOpenSettingsButton()}
                 {isTranslatorView ? null : renderTranslatorBotButton()}
-                {isHomeView ? renderBots : null}
+                {/* {isHomeView ? renderBots : null} */}
             </div>
         </div>
     )

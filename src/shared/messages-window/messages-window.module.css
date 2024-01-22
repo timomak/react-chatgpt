@@ -1,11 +1,19 @@
 .container {
     display: flex;
     flex: 1;
+    overflow-y: scroll;
+    -webkit-mask-image: linear-gradient(to top, var(--main-bg-color) 97%, transparent 100%);
+
+}
+
+.lower-container {
+    display: flex;
+    flex: 1;
     margin-bottom: 10px;
     flex-direction: column;
     gap: var(--general-spacing);
     overflow-y: scroll;
-    -webkit-mask-image: linear-gradient(to top, black 97%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, var(--main-bg-color) 98%, transparent 100%);
     padding-top: 15px;
-    padding-bottom: calc(100dvh * .4);
+    padding-bottom: calc(50dvh * .4);
 }

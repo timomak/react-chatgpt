@@ -13,7 +13,7 @@ export function AudioRecordingAnimation({
 }: AudioRecordingAnimationProps) {
     return (
         <div className={styles["loader"]}>
-            <button className={`${styles["record-container"]} ${isRecording ? styles["wave-container"] : styles["mic-container"]}`} onClick={onToggleIsRecording}>
+            <button className={`${styles["record-container"]} ${isRecording ? styles["wave-container"] : styles["mic-container"]} glow-component ${isRecording ? styles['record-container-visible-glow'] : ''}`} onClick={onToggleIsRecording}>
                 {isRecording ?
                     (
                         <svg id="wave" className={styles["wave"]} data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 38.05">

@@ -31,14 +31,16 @@ export function MessageWindow({
     }, [messages, isMainChatModalVisible]);
 
     return (
-        <div ref={messagesEndRef} className={styles['container']}>
-            {messages?.map((current, index) => {
-                return (
-                    <Fragment key={`message-window-key-index-${index}`}>
-                        <MessageView variant={current.variant} text={current.text} />
-                    </Fragment>
-                )
-            })}
+        <div className={styles['container']}>
+            <div ref={messagesEndRef} className={styles['lower-container']}>
+                {messages?.map((current, index) => {
+                    return (
+                        <Fragment key={`message-window-key-index-${index}`}>
+                            <MessageView variant={current.variant} text={current.text} />
+                        </Fragment>
+                    )
+                })}
+            </div>
         </div>
     )
 }
