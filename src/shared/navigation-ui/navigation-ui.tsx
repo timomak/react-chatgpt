@@ -21,33 +21,6 @@ export function NavigationUI({
     onRightActionPressed,
 }: NavigationUIProps) {
 
-    const renderRightElement = useMemo(() => {
-        if (rightActionElement === undefined) {
-            return (
-                <div />
-            )
-        }
-
-        if (String(rightActionElement)) {
-            switch (rightActionElement) {
-                default:
-                    return (
-                        <button className={styles['right-action-container']} onClick={onRightActionPressed}>
-                            <div className={styles['right-action-text']}>
-                                {rightActionElement}
-                            </div>
-                        </button>
-                    )
-            }
-        }
-
-        return (
-            <button className={styles['right-action-container']} onClick={onRightActionPressed}>
-                {rightActionElement}
-            </button>
-        )
-    }, [onRightActionPressed, rightActionElement]);
-
     const renderLeftElement = useMemo(() => {
         if (leftActionElement === undefined) {
             return (
@@ -120,6 +93,35 @@ export function NavigationUI({
             </button>
         )
     }, [onCenterActionPressed, centerActionElement]);
+
+
+    const renderRightElement = useMemo(() => {
+        if (rightActionElement === undefined) {
+            return (
+                <div />
+            )
+        }
+
+        if (String(rightActionElement)) {
+            switch (rightActionElement) {
+                default:
+                    return (
+                        <button className={styles['right-action-container']} onClick={onRightActionPressed}>
+                            <div className={`${styles['right-action-text']} ${styles['button-text']}`}>
+                                {rightActionElement}
+                            </div>
+                        </button >
+                    )
+            }
+        }
+
+        return (
+            <button className={styles['right-action-container']} onClick={onRightActionPressed}>
+                {rightActionElement}
+            </button>
+        )
+    }, [onRightActionPressed, rightActionElement]);
+
 
     return (
         <div className={styles['navigation-ui-container']}>

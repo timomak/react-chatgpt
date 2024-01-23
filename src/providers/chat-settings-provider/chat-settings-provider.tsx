@@ -38,7 +38,7 @@ export function ChatSettingsProvider({ children }: ChatSettingsProviderProps) {
     const [chatUsername, setChatUsername] = useState(username);
 
     // Chat UI Settings
-    const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(true);
+    const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
     const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
     const [isMainChatModalVisible, setIsMainChatModalVisible] = useState(true);
     const [currentBot, setCurrentBot] = useState<OpenAI.Beta.Assistants.Assistant>();

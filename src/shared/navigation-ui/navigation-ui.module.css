@@ -12,6 +12,15 @@
     rotate: -90deg;
 }
 
+.button-text {
+    color: var(--gray-color);
+    transition: color .3s;
+}
+
+.button-text:hover {
+    color: var(--white-color);
+}
+
 .close-button-container {
     color: var(--gray-color);
     font-size: 1.5rem;

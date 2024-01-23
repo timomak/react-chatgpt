@@ -2,13 +2,15 @@ import { useChatSettings } from '@/providers/chat-settings-provider/chat-setting
 import styles from './main-ai-chat.module.css'
 import OpenAI from 'openai';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { TextInput } from '../../shared/text-input/text-input';
-import { BotItem } from '../../shared/bot-item/bot-item';
 import { InputMessage } from '@/shared/input-message/input-message';
 import { MessageWindow } from '@/shared/messages-window/messages-window';
 import { MessageViewProps } from '@/shared/message-view/message-view';
 import MicRecorder from 'mic-recorder-to-mp3';
 import { NavigationUI } from '@/shared/navigation-ui/navigation-ui';
+import { useRouter } from 'next/navigation';
+import { RunSubmitToolOutputsParams } from 'openai/resources/beta/threads/index.mjs';
+import { timeout } from '@/utlis/timeout';
+
 interface MainAIChatProps {
 
 }
@@ -16,6 +18,7 @@ interface MainAIChatProps {
 const recorder = new MicRecorder({ bitRate: 128 });
 
 export function MainAIChat({ }: MainAIChatProps) {
+    const router = useRouter();
     const default_message: MessageViewProps = { variant: 'bot-text', text: 'Hello, how can I help you today?' };
 
     const {
@@ -66,8 +69,39 @@ export function MainAIChat({ }: MainAIChatProps) {
     const handleThreadRunStatus = async (threadId: string, run: OpenAI.Beta.Threads.Runs.Run) => {
         let isComplete = false
         while (isComplete === false) {
-            const threadMessages = await openai.beta.threads.runs.retrieve(threadId, run.id)
-            if (threadMessages.status === 'completed') isComplete = true
+            const runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id)
+            console.log("runStatus.status", runStatus.status)
+            if (runStatus.status === 'completed') isComplete = true
+            else if (runStatus.status === 'requires_action') {
+                const requiredActions = runStatus.required_action?.submit_tool_outputs.tool_calls
+                // console.log('required actions:', requiredActions)
+                let toolsOutput: RunSubmitToolOutputsParams.ToolOutput[] = []
+                if (requiredActions) {
+                    for (const action of requiredActions) {
+                        const funcName = action.function.name;
+                        const funcArguments = JSON.parse(action.function.arguments);
+                        if (funcName === 'handleUseTranslateBot') {
+                            const output = 'Success'
+                            // ACTION
+                            setIsMainChatModalVisible(false);
+
+                            // TODO: check if current app is already enabled.
+                            timeout(300)
+                            router.push('/translate')
+
+                            toolsOutput.push({
+                                tool_call_id: action.id,
+                                output
+                            })
+                        } else {
+                            console.log("Unknown function call attempted.")
+                        }
+                    }
+                    // Expire tool attempt use after finishing above
+                    await openai.beta.threads.runs.submitToolOutputs(threadId, run.id, { tool_outputs: toolsOutput })
+                    isComplete = true
+                }
+            }
         }
 
         retrieveThreadMessages(threadId, true)
@@ -164,6 +198,12 @@ export function MainAIChat({ }: MainAIChatProps) {
         setIsRecording((prevState) => !prevState)
     };
 
+    const createNewMessageThread = async () => {
+        const newThread = await openai.beta.threads.create();
+        setCurrentThreadId(newThread.id)
+        retrieveThreadMessages(newThread.id);
+    }
+
     useEffect(() => {
         if (currentBot && currentThreadId) retrieveThreadMessages(currentThreadId)
 
@@ -176,8 +216,10 @@ export function MainAIChat({ }: MainAIChatProps) {
             <div className={`${styles['sliding-container']} ${isMainChatModalVisible ? styles['sliding-container-open'] : ''}`}>
                 <button type='button' onClick={() => setIsMainChatModalVisible(false)} className={`${styles['clickable-background']}`} />
                 <div className={`${styles['main-chat-content']}`}>
-                    <NavigationUI leftActionElement={'back-button'} onLeftActionPressed={() => setIsMainChatModalVisible(false)} />
-                    <MessageWindow messages={allMessages} />
+                    <NavigationUI leftActionElement={'back-button'} onLeftActionPressed={() => setIsMainChatModalVisible(false)} rightActionElement={'new chat'} onRightActionPressed={createNewMessageThread} />
+                    {isMainChatModalVisible ? (
+                        <MessageWindow messages={allMessages} />
+                    ) : null}
                     <InputMessage isRecording={isRecording} onToggleIsRecording={handleToggleIsRecording} />
                 </div>
             </div>

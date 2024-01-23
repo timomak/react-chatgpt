@@ -209,8 +209,6 @@ export default function TranslateScreen() {
 
     }, []);
 
-
-
     return (
         <PageWrapper>
             <SettingsMenu
